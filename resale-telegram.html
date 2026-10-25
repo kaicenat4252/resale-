@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resale</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f4f4f4;--card:#fff;--tx:#111;--mut:#8a8a8a;--bd:#e6e6e6;--inv:#111;--invt:#fff;--t1:#d9d9d9;--t2:#bdbdbd}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0b0b;--card:#171717;--tx:#f2f2f2;--mut:#7d7d7d;--bd:#262626;--inv:#f2f2f2;--invt:#111;--t1:#2a2a2a;--t2:#3a3a3a}}
+:root[data-theme="dark"]{--bg:#0b0b0b;--card:#171717;--tx:#f2f2f2;--mut:#7d7d7d;--bd:#262626;--inv:#f2f2f2;--invt:#111;--t1:#2a2a2a;--t2:#3a3a3a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.4 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif}
+#app{max-width:520px;margin:0 auto;padding:0 14px 92px}
+header{display:flex;justify-content:space-between;align-items:center;padding:16px 0 10px}
+.logo{font-size:24px;font-weight:800;letter-spacing:-1px}
+.ico{width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--bd);display:grid;place-items:center;cursor:pointer;font-size:16px;color:var(--tx)}
+.search{display:flex;gap:8px;margin-bottom:12px}
+.search input{flex:1;background:var(--card);border:1px solid var(--bd);border-radius:22px;padding:11px 16px;font:inherit;color:var(--tx);outline:0}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:20px;padding:8px 14px;font:inherit;font-size:14px;cursor:pointer}
+.chip.on{background:var(--inv);color:var(--invt);border-color:var(--inv)}
+.hero{background:var(--inv);color:var(--invt);border-radius:22px;padding:18px;margin-bottom:14px}
+.hero b{font-size:20px;display:block;letter-spacing:-.5px}.hero span{opacity:.6;font-size:13px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:var(--card);border-radius:20px;overflow:hidden;cursor:pointer;border:1px solid var(--bd)}
+.ph{aspect-ratio:1/1.12;display:grid;place-items:center;font-size:44px;font-weight:800;letter-spacing:-2px;color:rgba(0,0,0,.18);position:relative}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ph{color:rgba(255,255,255,.14)}}
+.heart{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:15px}
+.info{padding:10px 12px 12px}.info b{display:block;font-size:16px}.info p{margin:2px 0 0;color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{display:inline-block;font-size:11px;color:var(--mut);border:1px solid var(--bd);border-radius:10px;padding:1px 7px;margin-top:6px}
+nav{position:fixed;left:0;right:0;bottom:0;padding:8px 14px calc(8px + env(safe-area-inset-bottom,0px));background:var(--bg);display:flex;justify-content:center}
+nav div{display:flex;gap:4px;background:var(--card);border:1px solid var(--bd);border-radius:30px;padding:5px;width:100%;max-width:460px}
+nav button{flex:1;border:0;background:transparent;color:var(--mut);padding:10px 2px;border-radius:24px;font:inherit;font-size:11.5px;font-weight:600;cursor:pointer}
+nav button.on{background:var(--inv);color:var(--invt)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:20}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;background:var(--bg);border-radius:26px 26px 0 0;max-height:88%;overflow:auto;padding:8px 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.grab{width:40px;height:4px;border-radius:2px;background:var(--bd);margin:4px auto 12px}
+.big{border-radius:22px;aspect-ratio:1/.8;display:grid;place-items:center;font-size:76px;font-weight:800;letter-spacing:-3px;color:rgba(0,0,0,.18);margin-bottom:12px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .big{color:rgba(255,255,255,.14)}}
+.pr{font-size:26px;font-weight:800;letter-spacing:-1px}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.kv div{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:9px 12px}.kv small{display:block;color:var(--mut);font-size:11px}
+.sel{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:12px;cursor:pointer;margin-bottom:12px}
+.av{width:42px;height:42px;border-radius:50%;background:var(--inv);color:var(--invt);display:grid;place-items:center;font-weight:800}
+.btn{display:block;width:100%;text-align:center;border:0;border-radius:26px;padding:14px;background:var(--inv);color:var(--invt);font:inherit;font-weight:700;cursor:pointer;text-decoration:none;margin-bottom:8px}
+.btn.s{background:transparent;color:var(--tx);border:1px solid var(--bd)}
+label{display:block;margin:12px 0 6px;font-size:13px;color:var(--mut)}
+.f input,.f select,.f textarea{width:100%;background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:11px 14px;font:inherit;color:var(--tx);outline:0}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+h2{margin:18px 0 8px;font-size:20px;letter-spacing:-.5px}
+.empty{text-align:center;color:var(--mut);padding:50px 20px}
+.gal{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;margin-bottom:12px;scrollbar-width:none}.gal img{flex:none;width:100%;border-radius:22px;aspect-ratio:1/.9;object-fit:cover;scroll-snap-align:center}.pvi{width:72px;height:72px;border-radius:14px;object-fit:cover;border:1px solid var(--bd);cursor:pointer}
+.rv{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:10px 12px;margin-bottom:8px}.rv span{color:var(--mut);font-size:13px}.rv small{color:var(--mut)}
+.stc{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:9px 12px}.stc small{display:block;color:var(--mut);font-size:11px}.stc b{font-size:20px}
+.li{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:10px;margin-bottom:8px;cursor:pointer}.lt{width:64px;height:64px;border-radius:14px;flex:none;display:grid;place-items:center;font-size:24px;font-weight:800;color:rgba(0,0,0,.18)}.ln{color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ls{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}.ls span{font-size:11px;color:var(--mut);border:1px solid var(--bd);border-radius:10px;padding:1px 8px}
+.gate{position:fixed;inset:0;z-index:60;background:var(--bg);display:none;overflow:auto}.gin{max-width:520px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top,0px)) 18px calc(24px + env(safe-area-inset-bottom,0px))}.gt p{margin:0 0 12px;font-size:14px;line-height:1.5}.gc{display:flex;gap:10px;align-items:center;color:var(--tx);font-size:14px;margin:16px 0}.gc input{width:22px;height:22px;flex:none;accent-color:var(--inv)}
+input,select,textarea{font-size:16px!important}.pcard{background:var(--card);border:1px solid var(--bd);border-radius:20px}
+.act{display:flex;gap:6px;margin-top:8px}.act .chip{padding:5px 12px;font-size:12px}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--inv);color:var(--invt);padding:10px 18px;border-radius:20px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:40}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<nav><div><button data-v="feed" class="on">Лента</button><button data-v="fav">Избранное</button><button data-v="sell">Продать</button><button data-v="mine">Мои</button><button data-v="prof">Профиль</button></div></nav>
+<div class="ov" id="ov"><div class="sheet" id="sh"></div></div>
+<div id="gate" class="gate"><div class="gin">
+<div class="logo" style="margin-bottom:6px">resale</div>
+<h2 style="margin:8px 0 12px">Перед началом</h2>
+<div class="gt">
+<p><b>Resale — это площадка для поиска вещей и размещения объявлений.</b> Мы не продаём товары сами и не являемся стороной сделки между покупателем и продавцом.</p>
+<p>Мы не принимаем оплату, не отвечаем за доставку, не проверяем качество, подлинность и наличие товаров, а также честность пользователей. Отметка «Проверенный магазин» и отзывы не гарантируют безопасность сделки.</p>
+<p><b>Resale не несёт ответственности</b> за убытки, мошенничество и иные последствия сделок, которые вы заключаете с другими пользователями. Все договорённости об оплате, отправке и возврате вы заключаете самостоятельно.</p>
+<p>Как снизить риск: не переводите предоплату незнакомым продавцам, просите видео вещи и подтверждение отправки, пользуйтесь доставкой с отслеживанием и оплатой при получении, проверяйте вещь при получении. Если видите обман, нажмите «Пожаловаться» в объявлении.</p>
+<p>Продолжая, вы подтверждаете, что прочитали эти условия и принимаете их.</p>
+</div>
+<label class="gc"><input type="checkbox" id="gchk"><span>Я прочитал(а) и принимаю условия</span></label>
+<button class="btn" id="gok" disabled style="opacity:.4">Принять и войти</button>
+</div></div>
+<div id="toast"></div>
+<script>
+var AES=['Все','Vintage','Indie sleaze','Grunge','Archive','Обувь'];
+var SEL={
+ nocturne:{demo:1,n:'nocturne.vintage',h:'nocturne_vintage',v:1,a:'Винтажный streetwear 90-х и 2000-х. Отправка СДЭК по всей России.',c:'Москва'},
+ dust:{demo:1,n:'dust&bone',h:'dustandbone',v:1,a:'Grunge и indie sleaze, кожа и потёртый деним.',c:'Санкт-Петербург'},
+ arch:{demo:1,n:'archive.room',h:'archive_room',v:0,a:'Архивные вещи дизайнеров. Продаю личную коллекцию.',c:'Казань'},
+ me:{n:'Мой профиль',h:'',v:0,a:'',c:''}};
+var P=[
+ {id:1,t:'Худи Stüssy 90s',p:6800,s:'L',cat:'Худи',ae:'Vintage',co:'Хорошее',se:'nocturne',g:1},
+ {id:2,t:'Кожаная куртка biker',p:14500,s:'M',cat:'Куртки',ae:'Indie sleaze',co:'Отличное',se:'dust',g:2},
+ {id:3,t:'Широкие джинсы baggy',p:3900,s:'L',cat:'Джинсы',ae:'Vintage',co:'Хорошее',se:'nocturne',g:2},
+ {id:4,t:'Nike Air Max 95',p:11200,s:'42',cat:'Обувь',ae:'Обувь',co:'Отличное',se:'nocturne',g:1},
+ {id:5,t:'Кардиган оверсайз, mohair',p:5200,s:'M',cat:'Верх',ae:'Grunge',co:'Хорошее',se:'dust',g:1},
+ {id:6,t:'Куртка Helmut Lang, 2003',p:32000,s:'M',cat:'Куртки',ae:'Archive',co:'Отличное',se:'arch',g:2},
+ {id:7,t:'Футболка Nirvana, принт',p:4300,s:'XL',cat:'Футболки',ae:'Grunge',co:'Есть износ',se:'dust',g:2},
+ {id:8,t:'Ремень с пряжкой western',p:1800,s:'ONE',cat:'Аксессуары',ae:'Indie sleaze',co:'Хорошее',se:'dust',g:1},
+ {id:9,t:'Adidas Samba, 2006',p:8900,s:'41',cat:'Обувь',ae:'Обувь',co:'Хорошее',se:'nocturne',g:2},
+ {id:10,t:'Пальто Yohji, архив',p:41000,s:'L',cat:'Верх',ae:'Archive',co:'Отличное',se:'arch',g:1}];
+var st={v:'feed',ae:'Все',q:'',size:'',cat:'',maxp:'',type:'',fav:{},nid:11};
+var $=function(i){return document.getElementById(i)};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function pr(n){return n.toLocaleString('ru-RU')+' ₽'}
+function tone(g){return g==1?'linear-gradient(160deg,var(--t1),var(--t2))':'linear-gradient(200deg,var(--t2),var(--t1))'}
+function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(function(){e.classList.remove('on')},1800)}
+function filt(){
+  return P.filter(function(x){
+    if(st.ae!='Все'&&x.ae!=st.ae&&!(st.ae=='Обувь'&&x.cat=='Обувь'))return false;
+    if(st.q&&(x.t+' '+x.cat+' '+x.ae).toLowerCase().indexOf(st.q.toLowerCase())<0)return false;
+    if(st.size&&x.s!=st.size)return false;
+    if(st.cat&&x.cat!=st.cat)return false;
+    if(st.type&&typ(x.cat)!=st.type)return false;
+    if(st.maxp&&x.p>+st.maxp)return false;
+    return true;
+  });
+}
+function cardH(x){
+  return '<div class="card" data-id="'+x.id+'"><div class="ph" style="background:'+bg(x)+'">'+(x.imgs&&x.imgs.length?'':esc(x.t.charAt(0)))+'<span class="heart" data-f="'+x.id+'">'+(st.fav[x.id]?'♥':'♡')+'</span></div><div class="info"><b>'+pr(x.p)+'</b><p>'+esc(x.t)+'</p><span class="tag">'+esc(szLbl(x.s))+' · '+esc(x.co)+'</span></div></div>';
+}
+function render(){
+  var h='';
+  if(st.v=='feed'){
+    var L=filt(),nf=(st.size?1:0)+(st.cat?1:0)+(st.maxp?1:0)+(st.type?1:0);
+    h='<header><span class="logo">resale</span><span class="ico" id="bf">'+(nf?nf:'⚙')+'</span></header>'+
+    '<div class="search"><input id="q" placeholder="Поиск по вещам и стилям" value="'+esc(st.q)+'"></div>'+
+    '<div class="chips">'+AES.map(function(a){return '<button class="chip'+(a==st.ae?' on':'')+'" data-ae="'+a+'">'+a+'</button>'}).join('')+'</div>'+
+    (st.ae=='Все'&&!st.q?'<div class="hero"><span>Винтаж, streetwear, archive. Пишите продавцам напрямую в Telegram.</span></div>':'')+
+    (L.length?'<div class="grid">'+L.map(cardH).join('')+'</div>':'<div class="empty">Ничего не нашлось.<br>Попробуйте другой стиль или фильтр.</div>');
+  }else if(st.v=='prof'){
+    h=profH();
+  }else if(st.v=='mine'){
+    h=mineH();
+  }else if(st.v=='mine0'){
+    var M=P.filter(function(x){return x.mine});
+    h='<header><span class="logo">мои</span></header><div class="sel" style="cursor:default"><div class="av">@</div><div style="flex:1"><b>Ваш Telegram</b><div style="color:var(--mut);font-size:13px">'+(SEL.me.h?'@'+esc(SEL.me.h):'не указан')+'</div></div><button class="chip" id="eu">'+(SEL.me.h?'Изменить':'Указать')+'</button></div>'+(M.length?'<div class="grid">'+M.map(cardH).join('')+'</div>':'<div class="empty">У вас пока нет объявлений.<br>Опубликуйте первое во вкладке «Продать».</div>');
+  }else if(st.v=='fav'){
+    var F=P.filter(function(x){return st.fav[x.id]});
+    h='<header><span class="logo">избранное</span></header>'+(F.length?'<div class="grid">'+F.map(cardH).join('')+'</div>':'<div class="empty">Пока пусто.<br>Нажмите ♡ на понравившейся вещи.</div>');
+  }else{
+    h='<header><span class="logo">'+(st.edit?'изменить':'продать')+'</span></header><div class="f">'+
+    '<label>Фото (до 4, нажмите на фото, чтобы убрать)</label><div class="row" id="pv"></div><input type="file" id="n_f" accept="image/*" multiple style="display:none">'+
+    (SEL.me.h?'':'<div class="sel" id="gop"><div class="av">!</div><div style="flex:1"><b>Укажите Telegram в профиле</b><div style="color:var(--mut);font-size:13px">Один раз, дальше он подставится сам</div></div><span style="color:var(--mut)">›</span></div>')+
+    '<label>Название</label><input id="n_t" maxlength="60" placeholder="Например, худи Carhartt 90s">'+
+    '<label>Цена, ₽</label><input id="n_p" type="number" inputmode="numeric">'+
+    '<label>Категория</label><select id="n_k">'+['Худи','Куртки','Джинсы','Футболки','Верх','Обувь','Аксессуары'].map(function(c){return '<option>'+c+'</option>'}).join('')+'</select><label>Размер</label><div class="row" id="szb"></div><label>Состояние</label><select id="n_c"><option>Отличное</option><option>Хорошее</option><option>Есть износ</option></select>'+
+    ''+
+    '<label>Стиль</label><select id="n_a">'+AES.slice(1).map(function(a){return '<option>'+a+'</option>'}).join('')+'</select>'+
+    '<label>Описание</label><textarea id="n_d" rows="3" maxlength="500" placeholder="Замеры, дефекты, как отправляете"></textarea></div>'+
+    '<button class="btn" style="margin-top:16px" id="pub">'+(st.edit?'Сохранить изменения':'Опубликовать')+'</button>'+(st.edit?'<button class="btn s" id="cx">Отмена</button>':'')+'';
+  }
+  $('app').innerHTML=h;
+  document.querySelectorAll('nav button').forEach(function(b){b.classList.toggle('on',b.dataset.v==st.v)});
+  bind();
+}
+function bind(){
+  document.querySelectorAll('.chips .chip').forEach(function(c){c.onclick=function(){st.ae=c.dataset.ae;render()}});
+  document.querySelectorAll('.card').forEach(function(c){if(!c.dataset.id)return;c.onclick=function(e){
+    var f=e.target.closest('[data-f]');
+    if(f){togFav(+f.dataset.f);render();return}
+    prod(+c.dataset.id)}});
+  var q=$('q');if(q)q.oninput=function(){st.q=q.value;var p=q.selectionStart;render();var n=$('q');n.focus();n.setSelectionRange(p,p)};
+  var bf=$('bf');if(bf)bf.onclick=filters2;
+  var pb=$('pub');if(pb)pb.onclick=publish;
+  var nk=$('n_k');if(nk){nk.onchange=fillSz;fillSz()}
+  var nfi=$('n_f');if(nfi){nfi.onchange=function(){addPh(nfi.files);nfi.value=''};fillPh()}
+  var eu=$('eu');if(eu)eu.onclick=editP;
+  var tp=$('tp');if(tp)tp.onclick=editP;
+  var tr=$('tr');if(tr)tr.onclick=showTerms;
+  var cx=$('cx');if(cx)cx.onclick=cancelEdit;
+  restoreDraft();
+  var ep=$('ep');if(ep)ep.onclick=editP;
+  document.querySelectorAll('.li').forEach(function(r){r.onclick=function(e){var b=e.target.closest('[data-ed],[data-del]');if(b){if(b.dataset.ed)startEdit(+b.dataset.ed);else confirmDel(+b.dataset.del);return}prod(+r.dataset.id)}});
+  var gop=$('gop');if(gop)gop.onclick=function(){st.v='prof';render();editP()};
+}
+function open_(h){$('sh').innerHTML='<div class="grab"></div>'+h;$('ov').style.display='block';document.body.style.overflow='hidden';$('sh').scrollTop=0}
+function close_(){$('ov').style.display='none';document.body.style.overflow=''}
+$('ov').onclick=function(e){if(e.target==this)close_()};
+function prod(id){
+  var x=P.filter(function(p){return p.id==id})[0],s=SEL[x.se];
+  if(st.v!='mine')x.views=(x.views||0)+1;
+  open_(gal(x)+'<div class="pr">'+pr(x.p)+'</div><div style="margin-top:2px">'+esc(x.t)+'</div><div class="ls"><span>Просмотры: '+(x.views||0)+'</span><span>В избранном: '+(x.favs||0)+'</span></div>'+
+  (x.d?'<p style="margin:10px 0 0;white-space:pre-wrap">'+esc(x.d)+'</p>':'')+'<div class="kv"><div><small>Размер</small>'+esc(szLbl(x.s))+'</div><div><small>Состояние</small>'+esc(x.co)+'</div><div><small>Стиль</small>'+esc(x.ae)+'</div><div><small>Категория</small>'+esc(x.cat)+'</div></div>'+
+  '<div class="sel" id="gs"><div class="av">'+esc(s.n.charAt(0).toUpperCase())+'</div><div style="flex:1"><b>'+esc(s.n)+(s.v?' ✓':'')+'</b><div style="color:var(--mut);font-size:13px">'+(s.v?'Проверенный магазин':'Частный продавец')+(s.c?' · '+esc(s.c):'')+'</div></div>'+(x.mine?'':'<span style="color:var(--mut)">›</span>')+'</div>'+
+  (x.mine?'':'<a class="btn" target="_blank" rel="noopener" data-se="'+x.se+'" href="'+link(s.h,msgFor(x))+'">Написать в Telegram</a>')+
+  (x.mine?'<button class="btn" id="ed">Редактировать</button><button class="btn s" id="dl">Удалить объявление</button>':'<button class="btn s" id="fv">'+(st.fav[x.id]?'Убрать из избранного':'В избранное')+'</button>')+
+  (x.mine?'':'<button class="btn s" id="rp" style="border:0;color:var(--mut);font-size:13px">Пожаловаться</button>'));
+  if(!x.mine)$('gs').onclick=function(){seller(x.se)};
+  if($('fv'))$('fv').onclick=function(){togFav(x.id);close_();render()};
+  if($('ed'))$('ed').onclick=function(){startEdit(x.id)};
+  if($('dl'))$('dl').onclick=function(){confirmDel(x.id)};
+  if($('rp'))$('rp').onclick=function(){report(x)};
+}
+function seller(k){
+  var s=SEL[k],L=P.filter(function(p){return p.se==k});
+  open_('<div class="row" style="align-items:center;gap:12px"><div class="av" style="width:56px;height:56px;font-size:22px">'+esc(s.n.charAt(0).toUpperCase())+'</div><div><b style="font-size:18px">'+esc(s.n)+(s.v?' ✓':'')+'</b><div style="color:var(--mut);font-size:13px">'+(s.v?'Проверенный магазин':'Частный продавец')+' · '+esc(s.c)+'</div></div></div>'+
+  '<p>'+esc(s.a)+'</p><a class="btn" target="_blank" rel="noopener" data-se="'+k+'" href="'+link(s.h,'Здравствуйте! Нашёл ваш магазин в Resale.')+'">Написать в Telegram</a>'+
+  revBlock(k)+'<h2>Объявления ('+L.length+')</h2><div class="grid">'+L.map(cardH).join('')+'</div>');rvBind(k);
+  document.querySelectorAll('#sh .card').forEach(function(c){c.onclick=function(e){var f=e.target.closest('[data-f]');if(f){togFav(+f.dataset.f);seller(k);render();return}prod(+c.dataset.id)}});
+}
+function report(x){
+  open_('<h2 style="margin-top:4px">Причина жалобы</h2>'+['Мошенничество','Запрещённый товар','Спам','Неверное описание или фото'].map(function(r){return '<button class="btn s rr">'+r+'</button>'}).join(''));
+  document.querySelectorAll('.rr').forEach(function(b){b.onclick=function(){close_();toast('Жалоба отправлена модераторам')}});
+}
+function filters(){
+  var sz=['S','M','L','XL','36','37','38','39','40','41','42','43','44','45'],cats=P.map(function(p){return p.cat}).filter(function(v,i,a){return a.indexOf(v)==i});
+  open_('<h2 style="margin-top:4px">Фильтры</h2><label>Размер</label><div class="row">'+sz.map(function(s){return '<button class="chip fs'+(st.size==s?' on':'')+'" data-s="'+s+'">'+(st.size==s?'✓ ':'')+s+'</button>'}).join('')+'</div>'+
+  '<label>Категория</label><div class="row">'+cats.map(function(c){return '<button class="chip fc'+(st.cat==c?' on':'')+'" data-c="'+c+'">'+c+'</button>'}).join('')+'</div>'+
+  '<div class="f"><label>Цена до, ₽</label><input id="mp" type="number" inputmode="numeric" value="'+st.maxp+'"></div>'+
+  '<button class="btn" style="margin-top:16px" id="ap">Показать</button><button class="btn s" id="rs">Сбросить</button>');
+  var ts=st.size,tc=st.cat;
+  document.querySelectorAll('.fs').forEach(function(b){b.onclick=function(){ts=ts==b.dataset.s?'':b.dataset.s;document.querySelectorAll('.fs').forEach(function(x){var on=x.dataset.s==ts;x.classList.toggle('on',on);x.textContent=(on?'✓ ':'')+x.dataset.s})}});
+  document.querySelectorAll('.fc').forEach(function(b){b.onclick=function(){tc=tc==b.dataset.c?'':b.dataset.c;document.querySelectorAll('.fc').forEach(function(x){x.classList.toggle('on',x.dataset.c==tc)})}});
+  $('ap').onclick=function(){st.size=ts;st.cat=tc;st.maxp=$('mp').value;close_();render()};
+  $('rs').onclick=function(){st.size='';st.cat='';st.maxp='';close_();render()};
+}
+var nsz='';
+var CL=['S','M','L','XL'],SH=['36','37','38','39','40','41','42','43','44','45'],CLC=['Худи','Куртки','Джинсы','Футболки','Верх'];
+var nph=[];
+function bg(x){return x.imgs&&x.imgs.length?'url('+x.imgs[0]+') center/cover':tone(x.g)}
+function gal(x){return x.imgs&&x.imgs.length?'<div class="gal">'+x.imgs.map(function(u){return '<img src="'+u+'" alt="">'}).join('')+'</div>':'<div class="big" style="background:'+tone(x.g)+'">'+esc(x.t.charAt(0))+'</div>'}
+function link(h,t){return 'https://t.me/'+h+'?text='+encodeURIComponent(t)}
+function msgFor(x){return 'Здравствуйте! Интересует объявление №'+x.id+': '+x.t+', '+pr(x.p)+' (размер: '+(x.s=='ONE'?'один размер':x.s)+'). Нашёл у вас в Resale.'}
+function addPh(files){
+  Array.prototype.slice.call(files).slice(0,4-nph.length).forEach(function(f){
+    var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){
+      var k=Math.min(1,800/Math.max(im.width,im.height)),c=document.createElement('canvas');
+      c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);
+      if(nph.length<4){nph.push(c.toDataURL('image/jpeg',.8));fillPh()}};im.onerror=function(){toast('Не удалось загрузить фото')};im.src=r.result};r.readAsDataURL(f)})
+}
+function fillPh(){
+  var p=$('pv');if(!p)return;
+  p.innerHTML=nph.map(function(u,i){return '<img class="pvi" data-i="'+i+'" src="'+u+'" alt="">'}).join('')+(nph.length<4?'<button type="button" class="chip" id="n_fb">+ Фото</button>':'');
+  p.querySelectorAll('.pvi').forEach(function(im){im.onclick=function(){nph.splice(+im.dataset.i,1);fillPh()}});
+  var b=$('n_fb');if(b)b.onclick=function(){$('n_f').click()}
+}
+function editU(){
+  open_('<h2 style="margin-top:4px">Ваш Telegram</h2><div class="f"><label>Юзернейм</label><input id="eu_i" placeholder="@nickname" value="'+esc(SEL.me.h?'@'+SEL.me.h:'')+'"></div><small style="color:var(--mut)">Покупатели будут писать вам по этому нику.</small><button class="btn" style="margin-top:16px" id="eu_s">Сохранить</button>');
+  $('eu_s').onclick=function(){var u=$('eu_i').value.replace(/^@/,'').trim();if(!/^[A-Za-z0-9_]{5,32}$/.test(u)){toast('Юзернейм: 5-32 символа, латиница, цифры, _');return}SEL.me.h=u;SEL.me.n='@'+u;close_();render();toast('Сохранено')}
+}
+st.cont={};
+document.addEventListener('click',function(e){var a=e.target.closest('a[data-se]');if(!a)return;var k=a.dataset.se;st.cont[k]=1;
+  if(SEL[k]&&SEL[k].demo){e.preventDefault();e.stopImmediatePropagation();
+    var mt=decodeURIComponent(a.href.split('?text=')[1]||'');
+    open_('<h2 style="margin-top:4px">Демо-режим</h2><p>Продавец в демо вымышленный. В рабочей версии откроется личный чат с продавцом, а в поле сообщения уже будет текст:</p><div class="rv" style="white-space:pre-wrap">'+esc(mt)+'</div><button class="btn" id="dm_ok">Понятно</button>');
+    $('dm_ok').onclick=close_}});
+var REV={
+ nocturne:[{n:'Артём',r:5,t:'Всё как на фото, отправили в тот же день.',d:'сентябрь 2026'},{n:'Лиза',r:5,t:'Хорошая упаковка, вежливый продавец.',d:'август 2026'},{n:'Игорь',r:4,t:'Вещь отличная, доставка чуть дольше обещанного.',d:'август 2026'}],
+ dust:[{n:'Мария',r:5,t:'Куртка огонь, состояние как описано.',d:'сентябрь 2026'}],
+ arch:[],me:[]};
+function stars(r){r=Math.round(r);return '★'.repeat(r)+'☆'.repeat(5-r)}
+function rate(k){var a=REV[k]||[];return a.length?a.reduce(function(s,x){return s+x.r},0)/a.length:0}
+function revList(k){var a=REV[k]||[];return a.length?a.map(function(x){return '<div class="rv"><b>'+esc(x.n)+'</b> <span>'+stars(x.r)+'</span><div>'+esc(x.t)+'</div><small>'+esc(x.d)+'</small></div>'}).join(''):'<small style="color:var(--mut)">Отзывов пока нет.</small>'}
+function revBlock(k){
+  var a=REV[k]||[];
+  return '<h2>Отзывы'+(a.length?' · ★ '+rate(k).toFixed(1)+' ('+a.length+')':'')+'</h2>'+revList(k)+(st.rv[k]?'<small style="color:var(--mut);display:block;margin-top:6px">Вы уже оставили отзыв.</small>':st.cont[k]?'<button class="btn s" id="rvb" style="margin-top:8px">Оставить отзыв</button>':'<small style="color:var(--mut);display:block;margin-top:6px">Отзыв можно оставить после обращения к продавцу.</small>')
+}
+function rvBind(k){var b=$('rvb');if(b)b.onclick=function(){reviewForm(k)}}
+function reviewForm(k){
+  var sc=5;
+  function d(){
+    open_('<h2 style="margin-top:4px">Ваш отзыв</h2><div class="row">'+[1,2,3,4,5].map(function(i){return '<button class="chip rs'+(i==sc?' on':'')+'" data-r="'+i+'">'+i+' ★</button>'}).join('')+'</div><div class="f"><label>Комментарий</label><textarea id="rt" rows="3" placeholder="Как прошла сделка?"></textarea></div><button class="btn" style="margin-top:16px" id="rsend">Отправить</button>');
+    document.querySelectorAll('.rs').forEach(function(b){b.onclick=function(){var t=$('rt').value;sc=+b.dataset.r;d();$('rt').value=t}});
+    $('rsend').onclick=function(){var t=$('rt').value.trim();if(!t){toast('Напишите пару слов');return}st.rv[k]=1;REV[k].push({n:SEL.me.n&&SEL.me.n!='Мой профиль'?SEL.me.n:'Покупатель',r:sc,t:t,d:'сегодня'});seller(k);toast('Спасибо за отзыв')}
+  }
+  d();
+}
+function mineH(){
+  var M=P.filter(function(x){return x.mine}),v=0,f=0;
+  M.forEach(function(x){v+=x.views||0;f+=x.favs||0});
+  return '<header><span class="logo">мои</span></header>'+
+  '<div class="grid" style="grid-template-columns:repeat(3,1fr)">'+[['Объявлений',M.length],['Просмотров',v],['В избранном',f]].map(function(k){return '<div class="stc"><small>'+k[0]+'</small><b>'+k[1]+'</b></div>'}).join('')+'</div>'+
+  (M.length?'<div style="margin-top:12px">'+M.map(function(x){return '<div class="li" data-id="'+x.id+'"><div class="lt" style="background:'+bg(x)+'">'+(x.imgs&&x.imgs.length?'':esc(x.t.charAt(0)))+'</div><div style="flex:1;min-width:0"><b>'+pr(x.p)+'</b><div class="ln">'+esc(x.t)+'</div><div class="ls"><span>Просмотры: '+(x.views||0)+'</span><span>Избранное: '+(x.favs||0)+'</span></div><div class="act"><button class="chip" data-ed="'+x.id+'">Изменить</button><button class="chip" data-del="'+x.id+'">Удалить</button></div></div></div>'}).join('')+'</div>':'<div class="empty">У вас пока нет объявлений.<br>Опубликуйте первое во вкладке «Продать».</div>')+
+  '<small style="color:var(--mut);display:block;margin-top:10px">В прототипе счётчики считают открытия и ♡ на этом устройстве. Настоящая статистика по всем покупателям появится с бэкендом.</small>';
+}
+function profH(){
+  var s=SEL.me,M=P.filter(function(x){return x.mine}),a=REV.me;
+  return '<header><span class="logo">профиль</span></header>'+
+  '<div class="pcard" style="padding:16px;margin-bottom:12px"><div class="row" style="align-items:center;gap:14px;flex-wrap:nowrap"><div class="av" style="width:64px;height:64px;font-size:26px">'+esc((s.n||'?').charAt(0).toUpperCase())+'</div><div style="flex:1;min-width:0"><b style="font-size:19px">'+esc(s.n)+'</b><div style="color:var(--mut);font-size:13px">'+(s.c?esc(s.c):'Город не указан')+(a.length?' · ★ '+rate('me').toFixed(1)+' ('+a.length+')':' · пока без отзывов')+'</div></div></div>'+
+  (s.a?'<p style="margin:12px 0 0">'+esc(s.a)+'</p>':'<p style="margin:12px 0 0;color:var(--mut)">Добавьте описание, чтобы покупатели вам доверяли.</p>')+
+  '<button class="btn s" id="ep" style="margin:14px 0 0">Редактировать профиль</button></div>'+
+  '<div class="sel" id="tp"><div class="av">@</div><div style="flex:1"><b>Telegram для связи</b><div style="color:var(--mut);font-size:13px">'+(s.h?'@'+esc(s.h)+(st.lock?' · из аккаунта Telegram':' · в профиле не показывается'):(st.nouser?'В аккаунте Telegram нет юзернейма. Создайте его в настройках Telegram':'Не указан. Без него покупатели не смогут вам написать'))+'</div></div></div>'+
+  ''+
+  '<h2>Отзывы'+(a.length?' ('+a.length+')':'')+'</h2>'+revList('me')+'<div class="sel" id="tr" style="margin-top:12px"><div class="av">§</div><div style="flex:1"><b>Правила и оферта</b><div style="color:var(--mut);font-size:13px">Условия использования площадки</div></div><span style="color:var(--mut)">›</span></div>';
+}
+function editP(){
+  var s=SEL.me;
+  open_('<h2 style="margin-top:4px">Профиль</h2><div class="f"><label>Имя профиля</label><input id="p_n" value="'+esc(s.n)+'" maxlength="30"><label>Город</label><input id="p_c" value="'+esc(s.c)+'" maxlength="40" placeholder="Например, Москва"><label>О себе</label><textarea id="p_a" rows="3" maxlength="200" placeholder="Что продаёте, как отправляете">'+esc(s.a)+'</textarea><label>Ваш Telegram (юзернейм)</label><input id="p_u" placeholder="@nickname" value="'+esc(s.h?'@'+s.h:'')+'"></div><small style="color:var(--mut);display:block;margin-top:6px">'+(st.lock?'Ник подставлен из вашего аккаунта Telegram. Если нужен другой, измените его и проверьте кнопкой ниже.':st.nouser?'В вашем аккаунте Telegram нет юзернейма. Укажите его вручную и проверьте кнопкой ниже либо создайте в настройках Telegram (Имя пользователя).':'Юзернейм видите только вы. Покупатели будут писать вам по нему, поэтому проверьте, что он верный.')+'</small>'+'<a class="btn s" id="p_chk" target="_blank" rel="noopener" href="#" style="margin-top:12px">Проверить ник в Telegram</a>'+'<button class="btn" style="margin-top:8px" id="p_s">Сохранить</button>');
+  var ck=$('p_chk');if(ck){var upd=function(){var v=$('p_u').value.replace(/^@/,'').trim();ck.href=/^[A-Za-z0-9_]{5,32}$/.test(v)?'https://t.me/'+v:'#'};$('p_u').oninput=upd;upd();ck.onclick=function(e){if(ck.getAttribute('href')=='#'){e.preventDefault();toast('Сначала введите корректный юзернейм')}}}
+  $('p_s').onclick=function(){
+    var n=$('p_n').value.trim(),u=$('p_u').value.replace(/^@/,'').trim();
+    if(!n){toast('Укажите имя профиля');return}
+    if(u&&!/^[A-Za-z0-9_]{5,32}$/.test(u)){toast('Юзернейм: 5-32 символа, латиница, цифры, _');return}
+    s.n=n;s.c=$('p_c').value.trim();s.a=$('p_a').value.trim();s.h=u;st.lock=u&&u==st.tgNick?1:0;close_();render();toast('Профиль сохранён')
+  }
+}
+function togFav(id){
+  var x=P.filter(function(p){return p.id==id})[0];
+  st.fav[id]=!st.fav[id];
+  x.favs=Math.max(0,(x.favs||0)+(st.fav[id]?1:-1));
+}
+[[1,128,9],[2,214,17],[3,67,4],[4,91,6],[5,53,3],[6,302,21],[7,48,2],[8,35,1],[9,110,8],[10,260,19]].forEach(function(a){
+  var x=P.filter(function(p){return p.id==a[0]})[0];if(x){x.views=a[1];x.favs=a[2]}
+});
+st.rv={};st.draft={};
+document.addEventListener('keydown',function(e){if(e.key=='Escape')close_()});
+function saveD(){
+  if(!$('n_t'))return;
+  st.draft={t:$('n_t').value,p:$('n_p').value,d:$('n_d').value,k:$('n_k').value,a:$('n_a').value,c:$('n_c').value,s:nsz};
+}
+function restoreDraft(){
+  var D=st.draft,f=$('n_t');if(!f)return;
+  if(D.k){$('n_k').value=D.k;fillSz()}
+  if(D.t)f.value=D.t;if(D.p)$('n_p').value=D.p;if(D.d)$('n_d').value=D.d;if(D.a)$('n_a').value=D.a;if(D.c)$('n_c').value=D.c;
+  if(D.s&&szList($('n_k').value).indexOf(D.s)>-1){nsz=D.s;document.querySelectorAll('.nz').forEach(function(x){var on=x.dataset.s==nsz;x.classList.toggle('on',on);x.textContent=(on?'✓ ':'')+szLbl(x.dataset.s)})}
+  $('app').oninput=saveD;$('app').onchange=saveD;
+  $('szb').onclick=function(){setTimeout(saveD,0)};
+}
+st.edit=0;
+function startEdit(id){
+  var x=P.filter(function(p){return p.id==id})[0];if(!x)return;
+  st.edit=id;nph=(x.imgs||[]).slice();
+  st.draft={t:x.t,p:String(x.p),d:x.d||'',k:x.cat,a:x.ae,c:x.co,s:x.s};
+  close_();st.v='sell';render();window.scrollTo(0,0);
+}
+function cancelEdit(){st.edit=0;st.draft={};nph=[];st.v='mine';render();window.scrollTo(0,0)}
+function confirmDel(id){
+  var x=P.filter(function(p){return p.id==id})[0];if(!x)return;
+  open_('<h2 style="margin-top:4px">Удалить объявление?</h2><p style="color:var(--mut)">«'+esc(x.t)+'» пропадёт из ленты и избранного. Это действие нельзя отменить.</p><button class="btn" id="dy">Удалить</button><button class="btn s" id="dn">Отмена</button>');
+  $('dy').onclick=function(){P=P.filter(function(p){return p.id!=id});delete st.fav[id];close_();render();toast('Объявление удалено')};
+  $('dn').onclick=close_;
+}
+function showTerms(){
+  var ok=false;try{ok=localStorage.getItem('resale_terms')=='1'}catch(e){}
+  open_('<h2 style="margin-top:4px">Правила и оферта</h2><div class="gt">'+document.querySelector('#gate .gt').innerHTML+'</div><small style="color:var(--mut);display:block;margin:8px 0 12px">'+(ok?'Вы приняли эти условия на этом устройстве.':'')+'</small><button class="btn s" id="tr_x">Закрыть</button>');
+  $('tr_x').onclick=close_;
+}
+function typ(c){return c=='Обувь'?'Обувь':c=='Аксессуары'?'Аксессуары':'Одежда'}
+function filters2(){
+  var tt=st.type,ts=st.size,tc=st.cat,tm=st.maxp;
+  function chip(cls,k,v,on,lbl){return '<button class="chip '+cls+(on?' on':'')+'" data-'+k+'="'+v+'">'+(on?'✓ ':'')+(lbl||v)+'</button>'}
+  function draw(){
+    var h='<h2 style="margin-top:4px">Фильтры</h2><label>Что ищете</label><div class="row">'+['Одежда','Обувь','Аксессуары'].map(function(t){return chip('ft','t',t,tt==t)}).join('')+'</div>';
+    if(tt=='Одежда')h+='<label>Категория</label><div class="row">'+CLC.map(function(c){return chip('fc','c',c,tc==c)}).join('')+'</div>';
+    if(tt=='Одежда')h+='<label>Размеры одежды</label><div class="row">'+CL.map(function(s){return chip('fs','s',s,ts==s)}).join('')+'</div>';
+    else if(tt=='Обувь')h+='<label>Размеры обуви</label><div class="row">'+SH.map(function(s){return chip('fs','s',s,ts==s)}).join('')+'</div>';
+    else if(!tt)h+='<label>Размеры</label><small style="color:var(--mut)">Выберите «Одежда» или «Обувь», чтобы увидеть свои размеры.</small>';
+    h+='<div class="f"><label>Цена до, ₽</label><input id="mp" type="number" inputmode="numeric" value="'+tm+'"></div><button class="btn" style="margin-top:16px" id="ap">Показать</button><button class="btn s" id="rs">Сбросить</button>';
+    open_(h);
+    document.querySelectorAll('.ft').forEach(function(b){b.onclick=function(){tm=$('mp').value;tt=tt==b.dataset.t?'':b.dataset.t;ts='';tc='';draw()}});
+    document.querySelectorAll('.fc').forEach(function(b){b.onclick=function(){tm=$('mp').value;tc=tc==b.dataset.c?'':b.dataset.c;draw()}});
+    document.querySelectorAll('.fs').forEach(function(b){b.onclick=function(){tm=$('mp').value;ts=ts==b.dataset.s?'':b.dataset.s;draw()}});
+    $('ap').onclick=function(){st.type=tt;st.size=ts;st.cat=tc;st.maxp=$('mp').value;close_();render()};
+    $('rs').onclick=function(){st.type='';st.size='';st.cat='';st.maxp='';close_();render()};
+  }
+  draw();
+}
+function szList(c){return c=='Обувь'?['36','37','38','39','40','41','42','43','44','45']:c=='Аксессуары'?['ONE']:['S','M','L','XL']}
+function szLbl(s){return s=='ONE'?'Один размер':s}
+function fillSz(){
+  nsz='';
+  $('szb').innerHTML=szList($('n_k').value).map(function(s){return '<button type="button" class="chip nz" data-s="'+s+'">'+szLbl(s)+'</button>'}).join('');
+  document.querySelectorAll('.nz').forEach(function(b){b.onclick=function(){
+    nsz=nsz==b.dataset.s?'':b.dataset.s;
+    document.querySelectorAll('.nz').forEach(function(x){var on=x.dataset.s==nsz;x.classList.toggle('on',on);x.textContent=(on?'✓ ':'')+szLbl(x.dataset.s)})
+  }})
+}
+function publish(){
+  var t=$('n_t').value.trim(),p=+$('n_p').value;
+  if(!t||!p){toast('Укажите название и цену');return}
+  if(!nsz){toast('Выберите размер');return}
+  var uu=SEL.me.h;
+  if(!uu){toast(st.nouser?'Создайте юзернейм в настройках Telegram':'Сначала укажите Telegram в профиле');st.v='prof';render();editP();return}
+  
+  var ed=st.edit&&P.filter(function(q){return q.id==st.edit})[0];
+  if(ed){ed.t=t;ed.p=p;ed.s=nsz;ed.cat=$('n_k').value;ed.ae=$('n_a').value;ed.co=$('n_c').value;ed.imgs=nph.slice();ed.d=$('n_d').value.trim()}else P.unshift({id:st.nid++,t:t,p:p,s:nsz,cat:$('n_k').value,ae:$('n_a').value,co:$('n_c').value,se:'me',mine:1,imgs:nph.slice(),d:$('n_d').value.trim(),g:1});nph=[];st.draft={};
+  st.v='mine';st.ae='Все';st.q='';st.size='';st.cat='';st.maxp='';st.type='';st.edit=0;render();toast(ed?'Изменения сохранены':'Объявление опубликовано');window.scrollTo(0,0);
+}
+document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){if(st.edit&&b.dataset.v!='sell'){st.edit=0;st.draft={};nph=[]}st.v=b.dataset.v;render();window.scrollTo(0,0)}});
+render();
+function gate(){
+  var ok=false;try{ok=localStorage.getItem('resale_terms')=='1'}catch(e){}
+  if(ok)return;
+  var g=$('gate');g.style.display='block';
+  $('gchk').onchange=function(){$('gok').disabled=!this.checked;$('gok').style.opacity=this.checked?1:.4};
+  $('gok').onclick=function(){try{localStorage.setItem('resale_terms','1')}catch(e){}g.style.display='none'};
+}
+gate();
+/* ===== Telegram Mini App ===== */
+var tg=window.Telegram&&Telegram.WebApp;
+if(tg){
+  tg.ready();tg.expand();
+  try{tg.setHeaderColor('secondary_bg_color')}catch(e){}
+  if(tg.colorScheme)document.documentElement.setAttribute('data-theme',tg.colorScheme);
+  var _o=open_,_c=close_;
+  open_=function(h){_o(h);tg.BackButton.show()};
+  close_=function(){_c();tg.BackButton.hide()};
+  tg.BackButton.onClick(function(){close_()});
+  var u=tg.initDataUnsafe&&tg.initDataUnsafe.user;
+  if(u){
+    if(u.first_name)SEL.me.n=u.first_name;
+    if(u.username){SEL.me.h=u.username;st.lock=1;st.tgNick=u.username}else{st.nouser=1}
+    render();
+  }
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href^="https://t.me/"]');
+    if(a){e.preventDefault();tg.openTelegramLink(a.href)}
+  });
+}
+</script>
+</body>
+</html>
