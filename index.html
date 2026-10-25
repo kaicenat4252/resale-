@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Resale</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --bg:#f4f4f4;--card:#fff;--tx:#111;--mut:#8a8a8a;--bd:#e6e6e6;--inv:#111;--invt:#fff;--t1:#d9d9d9;--t2:#bdbdbd}
@@ -392,6 +391,12 @@ gate();
 var tg=window.Telegram&&Telegram.WebApp;
 if(tg){
   tg.ready();tg.expand();
+  var isPhone=/android|ios/i.test(tg.platform||'');
+  var insets=function(){try{var a=tg.safeAreaInset||{},c=tg.contentSafeAreaInset||{};document.documentElement.style.setProperty('--tgtop',((a.top||0)+(c.top||0))+'px')}catch(e){}};
+  var sty=document.createElement('style');sty.textContent='body{padding-top:var(--tgtop,0px)}';document.head.appendChild(sty);
+  try{if(!isPhone&&tg.isVersionAtLeast&&tg.isVersionAtLeast('8.0')&&tg.requestFullscreen)tg.requestFullscreen()}catch(e){}
+  try{tg.onEvent('fullscreenChanged',insets);tg.onEvent('safeAreaChanged',insets);tg.onEvent('contentSafeAreaChanged',insets)}catch(e){}
+  insets();
   try{tg.setHeaderColor('secondary_bg_color')}catch(e){}
   if(tg.colorScheme)document.documentElement.setAttribute('data-theme',tg.colorScheme);
   var _o=open_,_c=close_;
