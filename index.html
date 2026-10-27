@@ -60,6 +60,8 @@ h2{margin:18px 0 8px;font-size:20px;letter-spacing:-.5px}
 input,select,textarea{font-size:16px!important}.pcard{background:var(--card);border:1px solid var(--bd);border-radius:20px}
 .act{display:flex;gap:6px;margin-top:8px}.act .chip{padding:5px 12px;font-size:12px}
 @media (min-width:720px){#app{max-width:1180px;padding:0 28px 96px}.grid{grid-template-columns:repeat(4,1fr);gap:16px}.hero{padding:28px}.logo{font-size:30px}.sheet{max-width:640px;border-radius:26px}.gate .gin,.gin{max-width:640px}nav div{max-width:520px}.card{border-radius:22px}.ph{font-size:56px}}
+.ex{position:absolute;top:8px;left:8px;background:var(--inv);color:var(--invt);font-size:10px;font-weight:700;letter-spacing:.6px;padding:3px 8px;border-radius:999px;text-transform:uppercase}
+.exn{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--bg);border:1px dashed var(--mut);color:var(--mut);font-size:13px}
 #toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--inv);color:var(--invt);padding:10px 18px;border-radius:20px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:40}
 #toast.on{opacity:1}
 </style>
@@ -90,16 +92,13 @@ var SEL={
  arch:{demo:1,n:'archive.room',h:'archive_room',v:0,a:'Архивные вещи дизайнеров. Продаю личную коллекцию.',c:'Казань'},
  me:{n:'Мой профиль',h:'',v:0,a:'',c:''}};
 var P=[
- {id:1,t:'Худи Stüssy 90s',p:6800,s:'L',cat:'Худи',ae:'Vintage',co:'Хорошее',se:'nocturne',g:1},
- {id:2,t:'Кожаная куртка biker',p:14500,s:'M',cat:'Куртки',ae:'Indie sleaze',co:'Отличное',se:'dust',g:2},
- {id:3,t:'Широкие джинсы baggy',p:3900,s:'L',cat:'Джинсы',ae:'Vintage',co:'Хорошее',se:'nocturne',g:2},
- {id:4,t:'Nike Air Max 95',p:11200,s:'42',cat:'Обувь',ae:'Обувь',co:'Отличное',se:'nocturne',g:1},
- {id:5,t:'Кардиган оверсайз, mohair',p:5200,s:'M',cat:'Верх',ae:'Grunge',co:'Хорошее',se:'dust',g:1},
- {id:6,t:'Куртка Helmut Lang, 2003',p:32000,s:'M',cat:'Куртки',ae:'Archive',co:'Отличное',se:'arch',g:2},
- {id:7,t:'Футболка Nirvana, принт',p:4300,s:'XL',cat:'Футболки',ae:'Grunge',co:'Есть износ',se:'dust',g:2},
- {id:8,t:'Ремень с пряжкой western',p:1800,s:'ONE',cat:'Аксессуары',ae:'Indie sleaze',co:'Хорошее',se:'dust',g:1},
- {id:9,t:'Adidas Samba, 2006',p:8900,s:'41',cat:'Обувь',ae:'Обувь',co:'Хорошее',se:'nocturne',g:2},
- {id:10,t:'Пальто Yohji, архив',p:41000,s:'L',cat:'Верх',ae:'Archive',co:'Отличное',se:'arch',g:1}];
+ {id:1,t:'Худи Stüssy, конец 90-х',p:6800,s:'L',cat:'Худи',ae:'Vintage',co:'Хорошее',se:'nocturne',ex:1,d:'Плотный хлопок, лёгкий вымытый чёрный. Принт на груди почти не потрескался, манжеты и резинка без вытяжки. Бирка на месте.\n\nЗамеры: плечи 56 см, длина 69 см, полуобхват груди 62 см. Сидит свободно.',g:1},
+ {id:3,t:'Широкие джинсы baggy, 90-е',p:3900,s:'L',cat:'Джинсы',ae:'Vintage',co:'Хорошее',se:'nocturne',ex:1,d:'Прямые широкие джинсы из плотного денима, выцветший синий. Посадка средняя, на ремне держатся отлично. Края внизу намеренно потёрты, дыр нет.\n\nЗамеры: половина талии 40 см, бёдра 63 см, длина 106 см.',g:2},
+ {id:4,t:'Nike Air Max 95, размер 42',p:11200,s:'42',cat:'Обувь',ae:'Обувь',co:'Отличное',se:'nocturne',ex:1,d:'Носили аккуратно, один сезон. Подошва с лёгкой выработкой по пятке, воздушная камера целая, верх без трещин.\n\nДлина стельки 27,5 см. Без коробки, отправлю в плотной упаковке.',g:1},
+ {id:5,t:'Кардиган оверсайз из мохера',p:5200,s:'M',cat:'Верх',ae:'Grunge',co:'Хорошее',se:'dust',ex:1,d:'Мягкий мохер, цвет угольно-серый, крупная вязка. Пуговицы родные, у локтей пара мелких затяжек. Не колется, очень тёплый.\n\nЗамеры: плечи 58 см, длина 66 см.',g:1},
+ {id:6,t:'Куртка Helmut Lang, 2003',p:32000,s:'M',cat:'Куртки',ae:'Archive',co:'Отличное',se:'arch',ex:1,d:'Лёгкая куртка прямого кроя из чёрного нейлона с матовой пропиткой. Молнии работают, подкладка целая, следов носки почти нет.\n\nЗамеры: плечи 47 см, длина 66 см, рукав 63 см. Редкая вещь, торг уместен только по личному общению.',g:2},
+ {id:7,t:'Футболка Nirvana, принт 90-х',p:4300,s:'XL',cat:'Футболки',ae:'Grunge',co:'Есть износ',se:'dust',ex:1,d:'Винтажная футболка: принт слегка потрескался, воротник вытянут, на подоле пара мелких пятнышек. Хлопок мягкий, выстиран.\n\nЗамеры: плечи 53 см, длина 74 см, полуобхват груди 58 см. Состояние честное, поэтому цена ниже.',g:2},
+ {id:8,t:'Кожаный ремень с пряжкой western',p:1800,s:'ONE',cat:'Аксессуары',ae:'Indie sleaze',co:'Хорошее',se:'dust',ex:1,d:'Коричневый ремень из натуральной кожи, металлическая пряжка в стиле western с гравировкой. Кожа живая, трещин нет.\n\nДлина 105 см, ширина 4 см, подходит на талию 80–95 см.',g:1}];
 var st={v:'feed',ae:'Все',q:'',size:'',cat:'',maxp:'',type:'',fav:{},nid:11};
 var $=function(i){return document.getElementById(i)};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
@@ -118,7 +117,7 @@ function filt(){
   });
 }
 function cardH(x){
-  return '<div class="card" data-id="'+x.id+'"><div class="ph" style="background:'+bg(x)+'">'+(x.imgs&&x.imgs.length?'':esc(x.t.charAt(0)))+'<span class="heart" data-f="'+x.id+'">'+(st.fav[x.id]?'♥':'♡')+'</span></div><div class="info"><b>'+pr(x.p)+'</b><p>'+esc(x.t)+'</p><span class="tag">'+esc(szLbl(x.s))+' · '+esc(x.co)+'</span></div></div>';
+  return '<div class="card" data-id="'+x.id+'"><div class="ph" style="background:'+bg(x)+'">'+(x.imgs&&x.imgs.length?'':esc(x.t.charAt(0)))+(x.ex?'<span class="ex">Пример</span>':'')+'<span class="heart" data-f="'+x.id+'">'+(st.fav[x.id]?'♥':'♡')+'</span></div><div class="info"><b>'+pr(x.p)+'</b><p>'+esc(x.t)+'</p><span class="tag">'+esc(szLbl(x.s))+' · '+esc(x.co)+'</span></div></div>';
 }
 function render(){
   var h='';
@@ -181,7 +180,7 @@ $('ov').onclick=function(e){if(e.target==this)close_()};
 function prod(id){
   var x=P.filter(function(p){return p.id==id})[0],s=SEL[x.se];
   if(st.v!='mine')x.views=(x.views||0)+1;
-  open_(gal(x)+'<div class="pr">'+pr(x.p)+'</div><div style="margin-top:2px">'+esc(x.t)+'</div><div class="ls"><span>Просмотры: '+(x.views||0)+'</span><span>В избранном: '+(x.favs||0)+'</span></div>'+
+  open_(gal(x)+(x.ex?'<div class="exn">Это пример объявления: так выглядит карточка. Вещь ненастоящая.</div>':'')+'<div class="pr">'+pr(x.p)+'</div><div style="margin-top:2px">'+esc(x.t)+'</div><div class="ls"><span>Просмотры: '+(x.views||0)+'</span><span>В избранном: '+(x.favs||0)+'</span></div>'+
   (x.d?'<p style="margin:10px 0 0;white-space:pre-wrap">'+esc(x.d)+'</p>':'')+'<div class="kv"><div><small>Размер</small>'+esc(szLbl(x.s))+'</div><div><small>Состояние</small>'+esc(x.co)+'</div><div><small>Стиль</small>'+esc(x.ae)+'</div><div><small>Категория</small>'+esc(x.cat)+'</div></div>'+
   '<div class="sel" id="gs"><div class="av">'+esc(s.n.charAt(0).toUpperCase())+'</div><div style="flex:1"><b>'+esc(s.n)+(s.v?' ✓':'')+'</b><div style="color:var(--mut);font-size:13px">'+(s.v?'Проверенный магазин':'Частный продавец')+(s.c?' · '+esc(s.c):'')+'</div></div>'+(x.mine?'':'<span style="color:var(--mut)">›</span>')+'</div>'+
   (x.mine?'':'<a class="btn" target="_blank" rel="noopener" data-se="'+x.se+'" href="'+link(s.h,msgFor(x))+'">Написать в Telegram</a>')+
@@ -396,7 +395,20 @@ if(tg){
   var isPhone=/android|ios/i.test(tg.platform||'');
   var insets=function(){try{var a=tg.safeAreaInset||{},c=tg.contentSafeAreaInset||{};document.documentElement.style.setProperty('--tgtop',((a.top||0)+(c.top||0))+'px')}catch(e){}};
   var sty=document.createElement('style');sty.textContent='body{padding-top:var(--tgtop,0px)}';document.head.appendChild(sty);
-  try{if(!isPhone&&tg.isVersionAtLeast&&tg.isVersionAtLeast('8.0')&&tg.requestFullscreen)tg.requestFullscreen()}catch(e){}
+  var real=!!(tg.initData&&tg.platform&&tg.platform!=='unknown');
+  var desk=real&&!isPhone;
+  if(desk){
+    var siteUrl=location.origin+location.pathname;
+    var dv=document.createElement('div');
+    dv.id='deskgate';
+    dv.style.cssText='position:fixed;inset:0;z-index:90;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px;text-align:center';
+    dv.innerHTML='<div style="max-width:420px"><div style="font-size:30px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px">resale</div><p style="color:var(--mut);margin:0 0 20px">На компьютере удобнее пользоваться сайтом в браузере: больше места и крупнее лента.</p><button class="btn" id="dg_open">Открыть в браузере</button><button class="btn s" id="dg_stay" style="margin-top:8px">Остаться в Telegram</button></div>';
+    document.body.appendChild(dv);
+    var openSite=function(){try{tg.openLink(siteUrl)}catch(e){window.open(siteUrl,'_blank')}};
+    document.getElementById('dg_open').onclick=openSite;
+    document.getElementById('dg_stay').onclick=function(){dv.remove();try{if(tg.isVersionAtLeast&&tg.isVersionAtLeast('8.0')&&tg.requestFullscreen)tg.requestFullscreen()}catch(e){}};
+    openSite();
+  }
   try{tg.onEvent('fullscreenChanged',insets);tg.onEvent('safeAreaChanged',insets);tg.onEvent('contentSafeAreaChanged',insets)}catch(e){}
   insets();
   try{tg.setHeaderColor('secondary_bg_color')}catch(e){}
