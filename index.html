@@ -29,7 +29,8 @@ header{display:flex;justify-content:space-between;align-items:center;padding:16p
 .card{background:var(--card);border-radius:20px;overflow:hidden;cursor:pointer;border:1px solid var(--bd)}
 .ph{aspect-ratio:1/1.12;display:grid;place-items:center;font-size:44px;font-weight:800;letter-spacing:-2px;color:rgba(0,0,0,.18);position:relative}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ph{color:rgba(255,255,255,.14)}}
-.heart{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:15px}
+.heart{position:absolute;top:8px;right:8px;width:32px;height:32px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:21px;line-height:1;color:var(--mut);border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.heart.on{color:var(--tx)}
 .info{padding:10px 12px 12px}.info b{display:block;font-size:16px}.info p{margin:2px 0 0;color:var(--mut);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tag{display:inline-block;font-size:11px;color:var(--mut);border:1px solid var(--bd);border-radius:10px;padding:1px 7px;margin-top:6px}
 nav{position:fixed;left:0;right:0;bottom:0;padding:8px 14px calc(8px + env(safe-area-inset-bottom,0px));background:var(--bg);display:flex;justify-content:center}
@@ -189,7 +190,7 @@ function filt(){
   });
 }
 function cardH(x){
-  return '<div class="card" data-id="'+x.id+'"><div class="ph" style="background:'+bg(x)+'">'+(x.imgs&&x.imgs.length?'':esc(x.t.charAt(0)))+(x.ex?'<span class="ex">Пример</span>':'')+'<span class="heart" data-f="'+x.id+'">'+(st.fav[x.id]?'♥':'♡')+'</span></div><div class="info"><b>'+pr(x.p)+'</b><p>'+esc(x.t)+'</p><span class="tag">'+esc(szLbl(x.s))+' · '+esc(x.co)+'</span></div></div>';
+  return '<div class="card" data-id="'+x.id+'"><div class="ph" style="background:'+bg(x)+'">'+(x.imgs&&x.imgs.length?'':esc(x.t.charAt(0)))+(x.ex?'<span class="ex">Пример</span>':'')+'<span class="heart'+(st.fav[x.id]?' on':'')+'" data-f="'+x.id+'">'+(st.fav[x.id]?'♥':'♡')+'</span></div><div class="info"><b>'+pr(x.p)+'</b><p>'+esc(x.t)+'</p><span class="tag">'+esc(szLbl(x.s))+' · '+esc(x.co)+'</span></div></div>';
 }
 function render(){
   var h='';
