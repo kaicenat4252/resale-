@@ -92,15 +92,75 @@ var SEL={
  arch:{demo:1,n:'archive.room',h:'archive_room',v:0,a:'Архивные вещи дизайнеров. Продаю личную коллекцию.',c:'Казань'},
  me:{n:'Мой профиль',h:'',v:0,a:'',c:''}};
 var P=[
- {id:1,t:'Худи Stüssy, конец 90-х',p:6800,s:'L',cat:'Худи',ae:'Vintage',co:'Хорошее',se:'nocturne',ex:1,d:'Плотный хлопок, лёгкий вымытый чёрный. Принт на груди почти не потрескался, манжеты и резинка без вытяжки. Бирка на месте.\n\nЗамеры: плечи 56 см, длина 69 см, полуобхват груди 62 см. Сидит свободно.',g:1},
- {id:3,t:'Широкие джинсы baggy, 90-е',p:3900,s:'L',cat:'Джинсы',ae:'Vintage',co:'Хорошее',se:'nocturne',ex:1,d:'Прямые широкие джинсы из плотного денима, выцветший синий. Посадка средняя, на ремне держатся отлично. Края внизу намеренно потёрты, дыр нет.\n\nЗамеры: половина талии 40 см, бёдра 63 см, длина 106 см.',g:2},
- {id:4,t:'Nike Air Max 95, размер 42',p:11200,s:'42',cat:'Обувь',ae:'Обувь',co:'Отличное',se:'nocturne',ex:1,d:'Носили аккуратно, один сезон. Подошва с лёгкой выработкой по пятке, воздушная камера целая, верх без трещин.\n\nДлина стельки 27,5 см. Без коробки, отправлю в плотной упаковке.',g:1},
- {id:5,t:'Кардиган оверсайз из мохера',p:5200,s:'M',cat:'Верх',ae:'Grunge',co:'Хорошее',se:'dust',ex:1,d:'Мягкий мохер, цвет угольно-серый, крупная вязка. Пуговицы родные, у локтей пара мелких затяжек. Не колется, очень тёплый.\n\nЗамеры: плечи 58 см, длина 66 см.',g:1},
- {id:6,t:'Куртка Helmut Lang, 2003',p:32000,s:'M',cat:'Куртки',ae:'Archive',co:'Отличное',se:'arch',ex:1,d:'Лёгкая куртка прямого кроя из чёрного нейлона с матовой пропиткой. Молнии работают, подкладка целая, следов носки почти нет.\n\nЗамеры: плечи 47 см, длина 66 см, рукав 63 см. Редкая вещь, торг уместен только по личному общению.',g:2},
- {id:7,t:'Футболка Nirvana, принт 90-х',p:4300,s:'XL',cat:'Футболки',ae:'Grunge',co:'Есть износ',se:'dust',ex:1,d:'Винтажная футболка: принт слегка потрескался, воротник вытянут, на подоле пара мелких пятнышек. Хлопок мягкий, выстиран.\n\nЗамеры: плечи 53 см, длина 74 см, полуобхват груди 58 см. Состояние честное, поэтому цена ниже.',g:2},
- {id:8,t:'Кожаный ремень с пряжкой western',p:1800,s:'ONE',cat:'Аксессуары',ae:'Indie sleaze',co:'Хорошее',se:'dust',ex:1,d:'Коричневый ремень из натуральной кожи, металлическая пряжка в стиле western с гравировкой. Кожа живая, трещин нет.\n\nДлина 105 см, ширина 4 см, подходит на талию 80–95 см.',g:1}];
+ {id:-1,t:'Худи Stüssy, конец 90-х',p:6800,s:'L',cat:'Худи',ae:'Vintage',co:'Хорошее',se:'nocturne',ex:1,d:'Плотный хлопок, лёгкий вымытый чёрный. Принт на груди почти не потрескался, манжеты и резинка без вытяжки. Бирка на месте.\n\nЗамеры: плечи 56 см, длина 69 см, полуобхват груди 62 см. Сидит свободно.',g:1},
+ {id:-3,t:'Широкие джинсы baggy, 90-е',p:3900,s:'L',cat:'Джинсы',ae:'Vintage',co:'Хорошее',se:'nocturne',ex:1,d:'Прямые широкие джинсы из плотного денима, выцветший синий. Посадка средняя, на ремне держатся отлично. Края внизу намеренно потёрты, дыр нет.\n\nЗамеры: половина талии 40 см, бёдра 63 см, длина 106 см.',g:2},
+ {id:-4,t:'Nike Air Max 95, размер 42',p:11200,s:'42',cat:'Обувь',ae:'Обувь',co:'Отличное',se:'nocturne',ex:1,d:'Носили аккуратно, один сезон. Подошва с лёгкой выработкой по пятке, воздушная камера целая, верх без трещин.\n\nДлина стельки 27,5 см. Без коробки, отправлю в плотной упаковке.',g:1},
+ {id:-5,t:'Кардиган оверсайз из мохера',p:5200,s:'M',cat:'Верх',ae:'Grunge',co:'Хорошее',se:'dust',ex:1,d:'Мягкий мохер, цвет угольно-серый, крупная вязка. Пуговицы родные, у локтей пара мелких затяжек. Не колется, очень тёплый.\n\nЗамеры: плечи 58 см, длина 66 см.',g:1},
+ {id:-6,t:'Куртка Helmut Lang, 2003',p:32000,s:'M',cat:'Куртки',ae:'Archive',co:'Отличное',se:'arch',ex:1,d:'Лёгкая куртка прямого кроя из чёрного нейлона с матовой пропиткой. Молнии работают, подкладка целая, следов носки почти нет.\n\nЗамеры: плечи 47 см, длина 66 см, рукав 63 см. Редкая вещь, торг уместен только по личному общению.',g:2},
+ {id:-7,t:'Футболка Nirvana, принт 90-х',p:4300,s:'XL',cat:'Футболки',ae:'Grunge',co:'Есть износ',se:'dust',ex:1,d:'Винтажная футболка: принт слегка потрескался, воротник вытянут, на подоле пара мелких пятнышек. Хлопок мягкий, выстиран.\n\nЗамеры: плечи 53 см, длина 74 см, полуобхват груди 58 см. Состояние честное, поэтому цена ниже.',g:2},
+ {id:-8,t:'Кожаный ремень с пряжкой western',p:1800,s:'ONE',cat:'Аксессуары',ae:'Indie sleaze',co:'Хорошее',se:'dust',ex:1,d:'Коричневый ремень из натуральной кожи, металлическая пряжка в стиле western с гравировкой. Кожа живая, трещин нет.\n\nДлина 105 см, ширина 4 см, подходит на талию 80–95 см.',g:1}];
 var st={v:'feed',ae:'Все',q:'',size:'',cat:'',maxp:'',type:'',fav:{},nid:11};
 var $=function(i){return document.getElementById(i)};
+var SB={url:'https://ukgthtaxfbbvsvnnbmwh.supabase.co',key:'sb_publishable_NtQ_9Z9LxLuznkHywy92lg_31imaOvp',bot:'https://t.me/resaleelbot/resale'}; /*SB*/
+var LIVE=!!(SB.url&&SB.key),AUTH=null;
+function TGINIT(){var t=window.Telegram&&window.Telegram.WebApp;return(t&&t.initData)||''}
+function sbGet(tbl,q){return fetch(SB.url+'/rest/v1/'+tbl+'?'+q,{headers:{apikey:SB.key}}).then(function(r){if(!r.ok)throw new Error('http '+r.status);return r.json()})}
+function sbCall(action,data){
+  var body=Object.assign({action:action,initData:TGINIT()},data||{});
+  return fetch(SB.url+'/functions/v1/api',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB.key},body:JSON.stringify(body)}).then(function(r){
+    return r.json().catch(function(){return{error:'bad_response'}}).then(function(j){
+      if(!r.ok||j.error){var e=new Error(j.message||j.error||'error');e.code=j.error||('http_'+r.status);throw e}
+      return j})})
+}
+var ERR={auth:'Сессия устарела. Закройте и откройте приложение заново',no_username:'Сначала укажите Telegram в профиле',limit:'Достигнут лимит объявлений',no_contact:'Отзыв можно оставить после обращения к продавцу',already:'Вы уже оставили отзыв об этом продавце',forbidden:'Это действие недоступно',not_found:'Не найдено. Возможно, объявление уже удалено',bad_request:'Проверьте заполнение полей',bad_photo:'Не удалось обработать фото. Попробуйте другое',server_config:'Сервис настраивается, попробуйте позже',too_big:'Фото слишком большие'};
+function errMsg(e){return ERR[e&&e.code]||'Не удалось выполнить. Проверьте интернет и попробуйте снова'}
+function needTg(){
+  if(!LIVE||AUTH)return true;
+  open_('<h2 style="margin-top:4px">Откройте в Telegram</h2><p style="color:var(--mut)">Публиковать объявления, писать отзывы и сохранять избранное можно из Telegram: так мы знаем, кто вы.</p><a class="btn" target="_blank" rel="noopener" href="'+esc(SB.bot)+'">Открыть в Telegram</a><button class="btn s" id="nt_x">Закрыть</button>');
+  $('nt_x').onclick=close_;return false
+}
+function mapL(r){
+  var mine=AUTH&&r.seller_id==AUTH.id;
+  return {id:r.id,t:r.title,p:r.price,s:r.size,cat:r.category,ae:r.aesthetic,co:r.condition,se:mine?'me':'u'+r.seller_id,mine:mine?1:0,imgs:r.photos||[],d:r.description||'',views:r.views||0,favs:r.favs||0,g:r.id%2?1:2,db:1}
+}
+function monthRu(d){var m=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'],x=new Date(d);return isNaN(x)?'':m[x.getMonth()]+' '+x.getFullYear()}
+function fillMe(p){SEL.me.n=p.name;SEL.me.h=p.username||'';SEL.me.c=p.city||'';SEL.me.a=p.about||'';SEL.me.v=0;st.lock=(p.username&&p.username==st.tgNick)?1:0}
+function loadAll(){
+  if(!LIVE)return Promise.resolve();
+  return Promise.all([sbGet('listings','select=*&order=created_at.desc&limit=500'),sbGet('profiles','select=*&limit=1000'),sbGet('reviews','select=*&order=created_at.desc&limit=2000')]).then(function(a){
+    var L=a[0],PR=a[1],RV=a[2],pm={};
+    PR.forEach(function(p){pm[p.tg_id]=p});
+    Object.keys(SEL).forEach(function(k){if(/^u\d+$/.test(k))delete SEL[k]});
+    PR.forEach(function(p){
+      if(AUTH&&p.tg_id==AUTH.id)fillMe(p);
+      else SEL['u'+p.tg_id]={n:p.name,h:p.username||'',c:p.city||'',a:p.about||'',v:p.verified?1:0}
+    });
+    P=L.map(mapL).concat(P.filter(function(x){return x.ex}));
+    Object.keys(REV).forEach(function(k){if(/^u\d+$/.test(k))delete REV[k]});
+    REV.me=[];
+    RV.forEach(function(r){
+      var k=(AUTH&&r.seller_id==AUTH.id)?'me':'u'+r.seller_id;
+      (REV[k]=REV[k]||[]).push({n:(pm[r.author_id]||{}).name||'Покупатель',r:r.rating,t:r.text||'',d:monthRu(r.created_at)});
+      if(AUTH&&r.author_id==AUTH.id)st.rv['u'+r.seller_id]=1
+    });
+    st.loaded=Date.now()
+  })
+}
+function refresh(){
+  if(!LIVE||st.busy||Date.now()-(st.loaded||0)<20000)return;
+  loadAll().then(function(){if($('ov').style.display!='block'&&st.v!='sell')render()}).catch(function(){})
+}
+document.addEventListener('visibilitychange',function(){if(!document.hidden)refresh()});
+function initApp(){
+  if(!LIVE)return;
+  st.loading=true;render();
+  var start=TGINIT()?sbCall('me').then(function(j){
+    AUTH={id:j.profile.tg_id};fillMe(j.profile);if(j.profile.username)st.nouser=0;
+    (j.favs||[]).forEach(function(id){st.fav[id]=true});
+    (j.contacts||[]).forEach(function(id){st.cont['u'+id]=1})
+  }).catch(function(e){toast(errMsg(e))}):Promise.resolve();
+  start.then(loadAll).catch(function(){toast('Не удалось загрузить объявления. Проверьте интернет')}).then(function(){st.loading=false;render()})
+}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function pr(n){return n.toLocaleString('ru-RU')+' ₽'}
 function tone(g){return g==1?'linear-gradient(160deg,var(--t1),var(--t2))':'linear-gradient(200deg,var(--t2),var(--t1))'}
@@ -127,7 +187,7 @@ function render(){
     '<div class="search"><input id="q" placeholder="Поиск по вещам и стилям" value="'+esc(st.q)+'"></div>'+
     '<div class="chips">'+AES.map(function(a){return '<button class="chip'+(a==st.ae?' on':'')+'" data-ae="'+a+'">'+a+'</button>'}).join('')+'</div>'+
     (st.ae=='Все'&&!st.q?'<div class="hero"><span>Винтаж, streetwear, archive. Пишите продавцам напрямую в Telegram.</span></div>':'')+
-    (L.length?'<div class="grid">'+L.map(cardH).join('')+'</div>':'<div class="empty">Ничего не нашлось.<br>Попробуйте другой стиль или фильтр.</div>');
+    (st.loading?'<div class="empty" style="padding:6px 0 12px">Загружаем объявления…</div>':'')+(L.length?'<div class="grid">'+L.map(cardH).join('')+'</div>':'<div class="empty">Ничего не нашлось.<br>Попробуйте другой стиль или фильтр.</div>');
   }else if(st.v=='prof'){
     h=profH();
   }else if(st.v=='mine'){
@@ -158,7 +218,7 @@ function bind(){
   document.querySelectorAll('.chips .chip').forEach(function(c){c.onclick=function(){st.ae=c.dataset.ae;render()}});
   document.querySelectorAll('.card').forEach(function(c){if(!c.dataset.id)return;c.onclick=function(e){
     var f=e.target.closest('[data-f]');
-    if(f){togFav(+f.dataset.f);render();return}
+    if(f){if(togFav(+f.dataset.f)===false)return;render();return}
     prod(+c.dataset.id)}});
   var q=$('q');if(q)q.oninput=function(){st.q=q.value;var p=q.selectionStart;render();var n=$('q');n.focus();n.setSelectionRange(p,p)};
   var bf=$('bf');if(bf)bf.onclick=filters2;
@@ -179,29 +239,33 @@ function close_(){$('ov').style.display='none';document.body.style.overflow=''}
 $('ov').onclick=function(e){if(e.target==this)close_()};
 function prod(id){
   var x=P.filter(function(p){return p.id==id})[0],s=SEL[x.se];
-  if(st.v!='mine')x.views=(x.views||0)+1;
+  if(st.v!='mine'){if(LIVE&&x.db){if(AUTH&&!x.mine)sbCall('view',{listing_id:x.id}).catch(function(){})}else x.views=(x.views||0)+1}
   open_(gal(x)+(x.ex?'<div class="exn">Это пример объявления: так выглядит карточка. Вещь ненастоящая.</div>':'')+'<div class="pr">'+pr(x.p)+'</div><div style="margin-top:2px">'+esc(x.t)+'</div><div class="ls"><span>Просмотры: '+(x.views||0)+'</span><span>В избранном: '+(x.favs||0)+'</span></div>'+
   (x.d?'<p style="margin:10px 0 0;white-space:pre-wrap">'+esc(x.d)+'</p>':'')+'<div class="kv"><div><small>Размер</small>'+esc(szLbl(x.s))+'</div><div><small>Состояние</small>'+esc(x.co)+'</div><div><small>Стиль</small>'+esc(x.ae)+'</div><div><small>Категория</small>'+esc(x.cat)+'</div></div>'+
   '<div class="sel" id="gs"><div class="av">'+esc(s.n.charAt(0).toUpperCase())+'</div><div style="flex:1"><b>'+esc(s.n)+(s.v?' ✓':'')+'</b><div style="color:var(--mut);font-size:13px">'+(s.v?'Проверенный магазин':'Частный продавец')+(s.c?' · '+esc(s.c):'')+'</div></div>'+(x.mine?'':'<span style="color:var(--mut)">›</span>')+'</div>'+
-  (x.mine?'':'<a class="btn" target="_blank" rel="noopener" data-se="'+x.se+'" href="'+link(s.h,msgFor(x))+'">Написать в Telegram</a>')+
+  (x.mine?'':(s.h?'<a class="btn" target="_blank" rel="noopener" data-se="'+x.se+'" href="'+link(s.h,msgFor(x))+'">Написать в Telegram</a>':'<div class="exn" style="text-align:center">Продавец не указал Telegram для связи</div>'))+
   (x.mine?'<button class="btn" id="ed">Редактировать</button><button class="btn s" id="dl">Удалить объявление</button>':'<button class="btn s" id="fv">'+(st.fav[x.id]?'Убрать из избранного':'В избранное')+'</button>')+
   (x.mine?'':'<button class="btn s" id="rp" style="border:0;color:var(--mut);font-size:13px">Пожаловаться</button>'));
   if(!x.mine)$('gs').onclick=function(){seller(x.se)};
-  if($('fv'))$('fv').onclick=function(){togFav(x.id);close_();render()};
+  if($('fv'))$('fv').onclick=function(){if(togFav(x.id)===false)return;close_();render()};
   if($('ed'))$('ed').onclick=function(){startEdit(x.id)};
   if($('dl'))$('dl').onclick=function(){confirmDel(x.id)};
   if($('rp'))$('rp').onclick=function(){report(x)};
 }
 function seller(k){
   var s=SEL[k],L=P.filter(function(p){return p.se==k});
-  open_('<div class="row" style="align-items:center;gap:12px"><div class="av" style="width:56px;height:56px;font-size:22px">'+esc(s.n.charAt(0).toUpperCase())+'</div><div><b style="font-size:18px">'+esc(s.n)+(s.v?' ✓':'')+'</b><div style="color:var(--mut);font-size:13px">'+(s.v?'Проверенный магазин':'Частный продавец')+' · '+esc(s.c)+'</div></div></div>'+
-  '<p>'+esc(s.a)+'</p><a class="btn" target="_blank" rel="noopener" data-se="'+k+'" href="'+link(s.h,'Здравствуйте! Нашёл ваш магазин в Resale.')+'">Написать в Telegram</a>'+
+  open_('<div class="row" style="align-items:center;gap:12px"><div class="av" style="width:56px;height:56px;font-size:22px">'+esc(s.n.charAt(0).toUpperCase())+'</div><div><b style="font-size:18px">'+esc(s.n)+(s.v?' ✓':'')+'</b><div style="color:var(--mut);font-size:13px">'+(s.v?'Проверенный магазин':'Частный продавец')+(s.c?' · '+esc(s.c):'')+'</div></div></div>'+
+  '<p>'+esc(s.a)+'</p>'+(s.h?'<a class="btn" target="_blank" rel="noopener" data-se="'+k+'" href="'+link(s.h,'Здравствуйте! Нашёл ваш магазин в Resale.')+'">Написать в Telegram</a>':'<div class="exn" style="text-align:center">Продавец не указал Telegram для связи</div>')+
   revBlock(k)+'<h2>Объявления ('+L.length+')</h2><div class="grid">'+L.map(cardH).join('')+'</div>');rvBind(k);
-  document.querySelectorAll('#sh .card').forEach(function(c){c.onclick=function(e){var f=e.target.closest('[data-f]');if(f){togFav(+f.dataset.f);seller(k);render();return}prod(+c.dataset.id)}});
+  document.querySelectorAll('#sh .card').forEach(function(c){c.onclick=function(e){var f=e.target.closest('[data-f]');if(f){if(togFav(+f.dataset.f)===false)return;seller(k);render();return}prod(+c.dataset.id)}});
 }
 function report(x){
+  if(LIVE&&x.db&&!needTg())return;
   open_('<h2 style="margin-top:4px">Причина жалобы</h2>'+['Мошенничество','Запрещённый товар','Спам','Неверное описание или фото'].map(function(r){return '<button class="btn s rr">'+r+'</button>'}).join(''));
-  document.querySelectorAll('.rr').forEach(function(b){b.onclick=function(){close_();toast('Жалоба отправлена модераторам')}});
+  document.querySelectorAll('.rr').forEach(function(b){b.onclick=function(){
+    var r=b.textContent;close_();
+    if(LIVE&&AUTH&&x.db){sbCall('report',{listing_id:x.id,reason:r}).then(function(){toast('Жалоба отправлена модераторам')}).catch(function(e){toast(errMsg(e))})}
+    else toast('Жалоба отправлена модераторам')}});
 }
 function filters(){
   var sz=['S','M','L','XL','36','37','38','39','40','41','42','43','44','45'],cats=P.map(function(p){return p.cat}).filter(function(v,i,a){return a.indexOf(v)==i});
@@ -219,7 +283,7 @@ var nsz='';
 var CL=['S','M','L','XL'],SH=['36','37','38','39','40','41','42','43','44','45'],CLC=['Худи','Куртки','Джинсы','Футболки','Верх'];
 var nph=[];
 function bg(x){return x.imgs&&x.imgs.length?'url('+x.imgs[0]+') center/cover':tone(x.g)}
-function gal(x){return x.imgs&&x.imgs.length?'<div class="gal">'+x.imgs.map(function(u){return '<img src="'+u+'" alt="">'}).join('')+'</div>':'<div class="big" style="background:'+tone(x.g)+'">'+esc(x.t.charAt(0))+'</div>'}
+function gal(x){return x.imgs&&x.imgs.length?'<div class="gal">'+x.imgs.map(function(u){return '<img src="'+esc(u)+'" alt="">'}).join('')+'</div>':'<div class="big" style="background:'+tone(x.g)+'">'+esc(x.t.charAt(0))+'</div>'}
 function link(h,t){return 'https://t.me/'+h+'?text='+encodeURIComponent(t)}
 function msgFor(x){return 'Здравствуйте! Интересует объявление №'+x.id+': '+x.t+', '+pr(x.p)+' (размер: '+(x.s=='ONE'?'один размер':x.s)+'). Нашёл у вас в Resale.'}
 function addPh(files){
@@ -240,7 +304,7 @@ function editU(){
   $('eu_s').onclick=function(){var u=$('eu_i').value.replace(/^@/,'').trim();if(!/^[A-Za-z0-9_]{5,32}$/.test(u)){toast('Юзернейм: 5-32 символа, латиница, цифры, _');return}SEL.me.h=u;SEL.me.n='@'+u;close_();render();toast('Сохранено')}
 }
 st.cont={};
-document.addEventListener('click',function(e){var a=e.target.closest('a[data-se]');if(!a)return;var k=a.dataset.se;st.cont[k]=1;
+document.addEventListener('click',function(e){var a=e.target.closest('a[data-se]');if(!a)return;var k=a.dataset.se;st.cont[k]=1;if(LIVE&&AUTH&&/^u\d+$/.test(k))sbCall('contact',{seller_id:+k.slice(1)}).catch(function(){});
   if(SEL[k]&&SEL[k].demo){e.preventDefault();e.stopImmediatePropagation();
     var mt=decodeURIComponent(a.href.split('?text=')[1]||'');
     open_('<h2 style="margin-top:4px">Демо-режим</h2><p>Продавец в демо вымышленный. В рабочей версии откроется личный чат с продавцом, а в поле сообщения уже будет текст:</p><div class="rv" style="white-space:pre-wrap">'+esc(mt)+'</div><button class="btn" id="dm_ok">Понятно</button>');
@@ -258,11 +322,15 @@ function revBlock(k){
 }
 function rvBind(k){var b=$('rvb');if(b)b.onclick=function(){reviewForm(k)}}
 function reviewForm(k){
+  if(LIVE&&!needTg())return;
   var sc=5;
   function d(){
     open_('<h2 style="margin-top:4px">Ваш отзыв</h2><div class="row">'+[1,2,3,4,5].map(function(i){return '<button class="chip rs'+(i==sc?' on':'')+'" data-r="'+i+'">'+i+' ★</button>'}).join('')+'</div><div class="f"><label>Комментарий</label><textarea id="rt" rows="3" placeholder="Как прошла сделка?"></textarea></div><button class="btn" style="margin-top:16px" id="rsend">Отправить</button>');
     document.querySelectorAll('.rs').forEach(function(b){b.onclick=function(){var t=$('rt').value;sc=+b.dataset.r;d();$('rt').value=t}});
-    $('rsend').onclick=function(){var t=$('rt').value.trim();if(!t){toast('Напишите пару слов');return}st.rv[k]=1;REV[k].push({n:SEL.me.n&&SEL.me.n!='Мой профиль'?SEL.me.n:'Покупатель',r:sc,t:t,d:'сегодня'});seller(k);toast('Спасибо за отзыв')}
+    $('rsend').onclick=function(){
+      var t=$('rt').value.trim();if(!t){toast('Напишите пару слов');return}
+      var done=function(){st.rv[k]=1;REV[k]=REV[k]||[];REV[k].push({n:SEL.me.n&&SEL.me.n!='Мой профиль'?SEL.me.n:'Покупатель',r:sc,t:t,d:'сегодня'});seller(k);toast('Спасибо за отзыв')};
+      if(LIVE&&/^u\d+$/.test(k)){var sb=$('rsend');sb.disabled=true;sbCall('add_review',{seller_id:+k.slice(1),rating:sc,text:t}).then(done).catch(function(e){sb.disabled=false;toast(errMsg(e))})}else done()}
   }
   d();
 }
@@ -272,7 +340,7 @@ function mineH(){
   return '<header><span class="logo">мои</span></header>'+
   '<div class="grid" style="grid-template-columns:repeat(3,1fr)">'+[['Объявлений',M.length],['Просмотров',v],['В избранном',f]].map(function(k){return '<div class="stc"><small>'+k[0]+'</small><b>'+k[1]+'</b></div>'}).join('')+'</div>'+
   (M.length?'<div style="margin-top:12px">'+M.map(function(x){return '<div class="li" data-id="'+x.id+'"><div class="lt" style="background:'+bg(x)+'">'+(x.imgs&&x.imgs.length?'':esc(x.t.charAt(0)))+'</div><div style="flex:1;min-width:0"><b>'+pr(x.p)+'</b><div class="ln">'+esc(x.t)+'</div><div class="ls"><span>Просмотры: '+(x.views||0)+'</span><span>Избранное: '+(x.favs||0)+'</span></div><div class="act"><button class="chip" data-ed="'+x.id+'">Изменить</button><button class="chip" data-del="'+x.id+'">Удалить</button></div></div></div>'}).join('')+'</div>':'<div class="empty">У вас пока нет объявлений.<br>Опубликуйте первое во вкладке «Продать».</div>')+
-  '<small style="color:var(--mut);display:block;margin-top:10px">В прототипе счётчики считают открытия и ♡ на этом устройстве. Настоящая статистика по всем покупателям появится с бэкендом.</small>';
+  '<small style="color:var(--mut);display:block;margin-top:10px">'+(LIVE?'Просмотры считаются один раз на человека в сутки. Данные обновляются при открытии вкладки.':'В прототипе счётчики считают открытия и ♡ на этом устройстве. Настоящая статистика по всем покупателям появится с бэкендом.')+'</small>';
 }
 function profH(){
   var s=SEL.me,M=P.filter(function(x){return x.mine}),a=REV.me;
@@ -292,15 +360,25 @@ function editP(){
     var n=$('p_n').value.trim(),u=$('p_u').value.replace(/^@/,'').trim();
     if(!n){toast('Укажите имя профиля');return}
     if(u&&!/^[A-Za-z0-9_]{5,32}$/.test(u)){toast('Юзернейм: 5-32 символа, латиница, цифры, _');return}
-    s.n=n;s.c=$('p_c').value.trim();s.a=$('p_a').value.trim();s.h=u;st.lock=u&&u==st.tgNick?1:0;close_();render();toast('Профиль сохранён')
+    var fin=function(){s.n=n;s.c=$('p_c').value.trim();s.a=$('p_a').value.trim();s.h=u;st.lock=u&&u==st.tgNick?1:0;close_();render();toast('Профиль сохранён')};
+    if(LIVE){
+      if(!needTg())return;
+      var sb=$('p_s');sb.disabled=true;
+      sbCall('save_profile',{name:n,city:$('p_c').value.trim(),about:$('p_a').value.trim(),username:u}).then(function(j){fillMe(j.profile);close_();render();toast('Профиль сохранён')}).catch(function(e){sb.disabled=false;toast(errMsg(e))})
+    }else fin()
   }
 }
 function togFav(id){
   var x=P.filter(function(p){return p.id==id})[0];
-  st.fav[id]=!st.fav[id];
-  x.favs=Math.max(0,(x.favs||0)+(st.fav[id]?1:-1));
+  if(!x)return false;
+  if(LIVE&&x.db&&!needTg())return false;
+  var on=!st.fav[id];
+  st.fav[id]=on;x.favs=Math.max(0,(x.favs||0)+(on?1:-1));
+  if(LIVE&&AUTH&&x.db){
+    sbCall('toggle_fav',{listing_id:id,on:on}).catch(function(e){st.fav[id]=!on;x.favs=Math.max(0,(x.favs||0)+(on?-1:1));render();toast(errMsg(e))})
+  }
 }
-[[1,128,9],[2,214,17],[3,67,4],[4,91,6],[5,53,3],[6,302,21],[7,48,2],[8,35,1],[9,110,8],[10,260,19]].forEach(function(a){
+[[-1,128,9],[-2,214,17],[-3,67,4],[-4,91,6],[-5,53,3],[-6,302,21],[-7,48,2],[-8,35,1]].forEach(function(a){
   var x=P.filter(function(p){return p.id==a[0]})[0];if(x){x.views=a[1];x.favs=a[2]}
 });
 st.rv={};st.draft={};
@@ -328,7 +406,9 @@ function cancelEdit(){st.edit=0;st.draft={};nph=[];st.v='mine';render();window.s
 function confirmDel(id){
   var x=P.filter(function(p){return p.id==id})[0];if(!x)return;
   open_('<h2 style="margin-top:4px">Удалить объявление?</h2><p style="color:var(--mut)">«'+esc(x.t)+'» пропадёт из ленты и избранного. Это действие нельзя отменить.</p><button class="btn" id="dy">Удалить</button><button class="btn s" id="dn">Отмена</button>');
-  $('dy').onclick=function(){P=P.filter(function(p){return p.id!=id});delete st.fav[id];close_();render();toast('Объявление удалено')};
+  $('dy').onclick=function(){
+    var fin=function(){P=P.filter(function(p){return p.id!=id});delete st.fav[id];close_();render();toast('Объявление удалено')};
+    if(LIVE&&x.db){var b=$('dy');b.disabled=true;sbCall('delete_listing',{id:id}).then(fin).catch(function(e){b.disabled=false;toast(errMsg(e))})}else fin()};
   $('dn').onclick=close_;
 }
 function showTerms(){
@@ -367,6 +447,7 @@ function fillSz(){
   }})
 }
 function publish(){
+  if(LIVE&&!needTg())return;
   var t=$('n_t').value.trim(),p=Math.round(+$('n_p').value);
   if(!t||!p){toast('Укажите название и цену');return}
   if(p<1||p>10000000){toast('Цена: от 1 до 10 000 000 ₽');return}
@@ -374,12 +455,29 @@ function publish(){
   var uu=SEL.me.h;
   if(!uu){toast(st.nouser?'Укажите юзернейм в профиле':'Сначала укажите Telegram в профиле');st.v='prof';render();editP();return}
   
+  if(LIVE){
+    if(!needTg())return;
+    if(st.busy)return;
+    var pbn=$('pub');st.busy=1;pbn.disabled=true;pbn.textContent='Сохраняем…';
+    var body={title:t,price:p,category:$('n_k').value,size:nsz,condition:$('n_c').value,aesthetic:$('n_a').value,description:$('n_d').value.trim(),photos:nph.slice()};
+    var editing=st.edit;
+    (editing?sbCall('update_listing',Object.assign({id:editing},body)):sbCall('create_listing',body)).then(function(j){
+      var row=mapL(j.listing),i=-1;P.forEach(function(q,n){if(q.id==row.id)i=n});
+      if(i>=0)P[i]=row;else P.unshift(row);
+      nph=[];st.draft={};st.v='mine';st.ae='Все';st.q='';st.size='';st.cat='';st.maxp='';st.type='';st.edit=0;st.busy=0;
+      render();toast(editing?'Изменения сохранены':'Объявление опубликовано');window.scrollTo(0,0)
+    }).catch(function(e){
+      st.busy=0;var b2=$('pub');if(b2){b2.disabled=false;b2.textContent=editing?'Сохранить изменения':'Опубликовать'}toast(errMsg(e))
+    });
+    return;
+  }
   var ed=st.edit&&P.filter(function(q){return q.id==st.edit})[0];
   if(ed){ed.t=t;ed.p=p;ed.s=nsz;ed.cat=$('n_k').value;ed.ae=$('n_a').value;ed.co=$('n_c').value;ed.imgs=nph.slice();ed.d=$('n_d').value.trim()}else P.unshift({id:st.nid++,t:t,p:p,s:nsz,cat:$('n_k').value,ae:$('n_a').value,co:$('n_c').value,se:'me',mine:1,imgs:nph.slice(),d:$('n_d').value.trim(),g:1});nph=[];st.draft={};
   st.v='mine';st.ae='Все';st.q='';st.size='';st.cat='';st.maxp='';st.type='';st.edit=0;render();toast(ed?'Изменения сохранены':'Объявление опубликовано');window.scrollTo(0,0);
 }
-document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){if(st.edit&&b.dataset.v!='sell'){st.edit=0;st.draft={};nph=[]}st.v=b.dataset.v;render();window.scrollTo(0,0)}});
+document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){if(st.edit&&b.dataset.v!='sell'){st.edit=0;st.draft={};nph=[]}st.v=b.dataset.v;render();window.scrollTo(0,0);refresh()}});
 render();
+initApp();
 function gate(){
   var ok=false;try{ok=localStorage.getItem('resale_terms')=='1'}catch(e){}
   if(ok)return;
@@ -402,7 +500,7 @@ if(tg){
     var dv=document.createElement('div');
     dv.id='deskgate';
     dv.style.cssText='position:fixed;inset:0;z-index:90;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px;text-align:center';
-    dv.innerHTML='<div style="max-width:420px"><div style="font-size:30px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px">resale</div><p style="color:var(--mut);margin:0 0 20px">На компьютере удобнее пользоваться сайтом в браузере: больше места и крупнее лента.</p><button class="btn" id="dg_open">Открыть в браузере</button><button class="btn s" id="dg_stay" style="margin-top:8px">Остаться в Telegram</button></div>';
+    dv.innerHTML='<div style="max-width:420px"><div style="font-size:30px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px">resale</div><p style="color:var(--mut);margin:0 0 20px">На компьютере удобнее смотреть объявления на сайте. Публиковать, писать отзывы и сохранять избранное можно из Telegram.</p><button class="btn" id="dg_open">Открыть в браузере</button><button class="btn s" id="dg_stay" style="margin-top:8px">Остаться в Telegram</button></div>';
     document.body.appendChild(dv);
     var openSite=function(){try{tg.openLink(siteUrl)}catch(e){window.open(siteUrl,'_blank')}};
     document.getElementById('dg_open').onclick=openSite;
