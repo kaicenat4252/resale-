@@ -112,12 +112,28 @@ function sbCall(action,data){
       if(!r.ok||j.error){var e=new Error(j.message||j.error||'error');e.code=j.error||('http_'+r.status);throw e}
       return j})})
 }
-var ERR={auth:'Сессия устарела. Закройте и откройте приложение заново',no_username:'Сначала укажите Telegram в профиле',limit:'Достигнут лимит объявлений',no_contact:'Отзыв можно оставить после обращения к продавцу',already:'Вы уже оставили отзыв об этом продавце',forbidden:'Это действие недоступно',not_found:'Не найдено. Возможно, объявление уже удалено',bad_request:'Проверьте заполнение полей',bad_photo:'Не удалось обработать фото. Попробуйте другое',server_config:'Сервис настраивается, попробуйте позже',too_big:'Фото слишком большие'};
+var ERR={http_401:'Сервер не принял запрос. Проверьте настройки функции',http_404:'Функция сервера не найдена',auth:'Сессия устарела. Закройте и откройте приложение заново',no_username:'Сначала укажите Telegram в профиле',limit:'Достигнут лимит объявлений',no_contact:'Отзыв можно оставить после обращения к продавцу',already:'Вы уже оставили отзыв об этом продавце',forbidden:'Это действие недоступно',not_found:'Не найдено. Возможно, объявление уже удалено',bad_request:'Проверьте заполнение полей',bad_photo:'Не удалось обработать фото. Попробуйте другое',server_config:'Сервис настраивается, попробуйте позже',too_big:'Фото слишком большие'};
 function errMsg(e){return ERR[e&&e.code]||'Не удалось выполнить. Проверьте интернет и попробуйте снова'}
+function inTgClient(){var t=window.Telegram&&window.Telegram.WebApp;return !!(t&&t.platform&&t.platform!=='unknown')}
+function login(){
+  if(!TGINIT()){st.authErr=inTgClient()?'no_init':'';return Promise.resolve()}
+  return sbCall('me').then(function(j){
+    AUTH={id:j.profile.tg_id};st.authErr='';fillMe(j.profile);if(j.profile.username)st.nouser=0;
+    (j.favs||[]).forEach(function(id){st.fav[id]=true});
+    (j.contacts||[]).forEach(function(id){st.cont['u'+id]=1})
+  }).catch(function(e){st.authErr=(e&&e.code)||'network';toast(errMsg(e))})
+}
 function needTg(){
   if(!LIVE||AUTH)return true;
-  open_('<h2 style="margin-top:4px">Откройте в Telegram</h2><p style="color:var(--mut)">Публиковать объявления, писать отзывы и сохранять избранное можно из Telegram: так мы знаем, кто вы.</p><a class="btn" target="_blank" rel="noopener" href="'+esc(SB.bot)+'">Открыть в Telegram</a><button class="btn s" id="nt_x">Закрыть</button>');
-  $('nt_x').onclick=close_;return false
+  var inTg=inTgClient(),noInit=inTg&&!TGINIT();
+  var h,p,btn;
+  if(noInit){h='Нет данных входа';p='Telegram не передал данные для входа. Откройте приложение через меню бота или по ссылке t.me/resaleelbot/resale.';btn='<a class="btn" target="_blank" rel="noopener" href="'+esc(SB.bot)+'">Открыть по ссылке</a>'}
+  else if(inTg){h='Не удалось войти';p='Приложение открыто в Telegram, но сервер не подтвердил вход (код: '+esc(st.authErr||'нет ответа')+'). Нажмите «Повторить». Если не помогает, сообщите этот код.';btn='<button class="btn" id="nt_r">Повторить</button>'}
+  else{h='Откройте в Telegram';p='Публиковать объявления, писать отзывы и сохранять избранное можно из Telegram: так мы знаем, кто вы.';btn='<a class="btn" target="_blank" rel="noopener" href="'+esc(SB.bot)+'">Открыть в Telegram</a>'}
+  open_('<h2 style="margin-top:4px">'+h+'</h2><p style="color:var(--mut)">'+p+'</p>'+btn+'<button class="btn s" id="nt_x">Закрыть</button>');
+  $('nt_x').onclick=close_;
+  if($('nt_r'))$('nt_r').onclick=function(){var b=$('nt_r');b.disabled=true;b.textContent='Подключаемся…';login().then(function(){return loadAll()}).catch(function(){}).then(function(){close_();render();toast(AUTH?'Готово, вы вошли':'Не получилось (код: '+(st.authErr||'нет ответа')+')')})};
+  return false
 }
 function mapL(r){
   var mine=AUTH&&r.seller_id==AUTH.id;
@@ -154,11 +170,7 @@ document.addEventListener('visibilitychange',function(){if(!document.hidden)refr
 function initApp(){
   if(!LIVE)return;
   st.loading=true;render();
-  var start=TGINIT()?sbCall('me').then(function(j){
-    AUTH={id:j.profile.tg_id};fillMe(j.profile);if(j.profile.username)st.nouser=0;
-    (j.favs||[]).forEach(function(id){st.fav[id]=true});
-    (j.contacts||[]).forEach(function(id){st.cont['u'+id]=1})
-  }).catch(function(e){toast(errMsg(e))}):Promise.resolve();
+  var start=login();
   start.then(loadAll).catch(function(){toast('Не удалось загрузить объявления. Проверьте интернет')}).then(function(){st.loading=false;render()})
 }
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
