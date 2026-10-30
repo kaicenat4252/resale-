@@ -107,7 +107,7 @@ function TGINIT(){var t=window.Telegram&&window.Telegram.WebApp;return(t&&t.init
 function sbGet(tbl,q){return fetch(SB.url+'/rest/v1/'+tbl+'?'+q,{headers:{apikey:SB.key}}).then(function(r){if(!r.ok)throw new Error('http '+r.status);return r.json()})}
 function sbCall(action,data){
   var body=Object.assign({action:action,initData:TGINIT()},data||{});
-  return fetch(SB.url+'/functions/v1/api',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB.key},body:JSON.stringify(body)}).then(function(r){
+  return fetch(SB.url+'/functions/v1/hyper-task',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB.key},body:JSON.stringify(body)}).then(function(r){
     return r.json().catch(function(){return{error:'bad_response'}}).then(function(j){
       if(!r.ok||j.error){var e=new Error(j.message||j.error||'error');e.code=j.error||('http_'+r.status);throw e}
       return j})})
