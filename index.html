@@ -62,6 +62,7 @@ input,select,textarea{font-size:16px!important}.pcard{background:var(--card);bor
 .act{display:flex;gap:6px;margin-top:8px}.act .chip{padding:5px 12px;font-size:12px}
 @media (min-width:720px){#app{max-width:1180px;padding:0 28px 96px}.grid{grid-template-columns:repeat(4,1fr);gap:16px}.hero{padding:28px}.logo{font-size:30px}.sheet{max-width:640px;border-radius:26px}.gate .gin,.gin{max-width:640px}nav div{max-width:520px}.card{border-radius:22px}.ph{font-size:56px}}
 .ex{position:absolute;top:8px;left:8px;background:var(--inv);color:var(--invt);font-size:10px;font-weight:700;letter-spacing:.6px;padding:3px 8px;border-radius:999px;text-transform:uppercase}
+.card.sd .ph{filter:grayscale(1);opacity:.6}
 .exn{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--bg);border:1px dashed var(--mut);color:var(--mut);font-size:13px}
 #toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--inv);color:var(--invt);padding:10px 18px;border-radius:20px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:40}
 #toast.on{opacity:1}
@@ -138,7 +139,7 @@ function needTg(){
 }
 function mapL(r){
   var mine=AUTH&&r.seller_id==AUTH.id;
-  return {id:r.id,t:r.title,p:r.price,s:r.size,cat:r.category,ae:r.aesthetic,co:r.condition,se:mine?'me':'u'+r.seller_id,mine:mine?1:0,imgs:r.photos||[],d:r.description||'',views:r.views||0,favs:r.favs||0,g:r.id%2?1:2,db:1}
+  return {id:r.id,t:r.title,p:r.price,s:r.size,cat:r.category,ae:r.aesthetic,co:r.condition,se:mine?'me':'u'+r.seller_id,mine:mine?1:0,sold:!!r.sold_at,imgs:r.photos||[],d:r.description||'',views:r.views||0,favs:r.favs||0,g:r.id%2?1:2,db:1}
 }
 function monthRu(d){var m=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'],x=new Date(d);return isNaN(x)?'':m[x.getMonth()]+' '+x.getFullYear()}
 function fillMe(p){SEL.me.n=p.name;SEL.me.h=p.username||'';SEL.me.c=p.city||'';SEL.me.a=p.about||'';SEL.me.v=0;st.lock=(p.username&&p.username==st.tgNick)?1:0}
@@ -180,6 +181,7 @@ function tone(g){return g==1?'linear-gradient(160deg,var(--t1),var(--t2))':'line
 function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(function(){e.classList.remove('on')},1800)}
 function filt(){
   return P.filter(function(x){
+    if(x.sold)return false;
     if(st.ae!='Все'&&x.ae!=st.ae&&!(st.ae=='Обувь'&&x.cat=='Обувь'))return false;
     if(st.q&&(x.t+' '+x.cat+' '+x.ae).toLowerCase().indexOf(st.q.toLowerCase())<0)return false;
     if(st.size&&x.s!=st.size)return false;
@@ -190,7 +192,7 @@ function filt(){
   });
 }
 function cardH(x){
-  return '<div class="card" data-id="'+x.id+'"><div class="ph" style="background:'+bg(x)+'">'+(x.imgs&&x.imgs.length?'':esc(x.t.charAt(0)))+(x.ex?'<span class="ex">Пример</span>':'')+'<span class="heart'+(st.fav[x.id]?' on':'')+'" data-f="'+x.id+'">'+(st.fav[x.id]?'♥':'♡')+'</span></div><div class="info"><b>'+pr(x.p)+'</b><p>'+esc(x.t)+'</p><span class="tag">'+esc(szLbl(x.s))+' · '+esc(x.co)+'</span></div></div>';
+  return '<div class="card'+(x.sold?' sd':'')+'" data-id="'+x.id+'"><div class="ph" style="background:'+bg(x)+'">'+(x.imgs&&x.imgs.length?'':esc(x.t.charAt(0)))+(x.ex?'<span class="ex">Пример</span>':(x.sold?'<span class="ex">Продано</span>':''))+'<span class="heart'+(st.fav[x.id]?' on':'')+'" data-f="'+x.id+'">'+(st.fav[x.id]?'♥':'♡')+'</span></div><div class="info"><b>'+pr(x.p)+'</b><p>'+esc(x.t)+'</p><span class="tag">'+esc(szLbl(x.s))+' · '+esc(x.co)+'</span></div></div>';
 }
 function render(){
   var h='';
@@ -244,7 +246,8 @@ function bind(){
   var cx=$('cx');if(cx)cx.onclick=cancelEdit;
   restoreDraft();
   var ep=$('ep');if(ep)ep.onclick=editP;
-  document.querySelectorAll('.li').forEach(function(r){r.onclick=function(e){var b=e.target.closest('[data-ed],[data-del]');if(b){if(b.dataset.ed)startEdit(+b.dataset.ed);else confirmDel(+b.dataset.del);return}prod(+r.dataset.id)}});
+  document.querySelectorAll('[data-mt]').forEach(function(b){b.onclick=function(e){e.stopPropagation();st.mt=b.dataset.mt;render()}});
+  document.querySelectorAll('.li').forEach(function(r){r.onclick=function(e){var b=e.target.closest('[data-ed],[data-del],[data-sold],[data-unsold]');if(b){if(b.dataset.ed)startEdit(+b.dataset.ed);else if(b.dataset.del)confirmDel(+b.dataset.del);else if(b.dataset.sold)setSold(+b.dataset.sold,true);else setSold(+b.dataset.unsold,false);return}prod(+r.dataset.id)}});
   var gop=$('gop');if(gop)gop.onclick=function(){st.v='prof';render();editP()};
 }
 function open_(h){$('sh').innerHTML='<div class="grab"></div>'+h;$('ov').style.display='block';document.body.style.overflow='hidden';$('sh').scrollTop=0}
@@ -253,23 +256,24 @@ $('ov').onclick=function(e){if(e.target==this)close_()};
 function prod(id){
   var x=P.filter(function(p){return p.id==id})[0],s=SEL[x.se];
   if(st.v!='mine'){if(LIVE&&x.db){if(AUTH&&!x.mine)sbCall('view',{listing_id:x.id}).catch(function(){})}else x.views=(x.views||0)+1}
-  open_(gal(x)+(x.ex?'<div class="exn">Это пример объявления: так выглядит карточка. Вещь ненастоящая.</div>':'')+'<div class="pr">'+pr(x.p)+'</div><div style="margin-top:2px">'+esc(x.t)+'</div><div class="ls"><span>Просмотры: '+(x.views||0)+'</span><span>В избранном: '+(x.favs||0)+'</span></div>'+
+  open_(gal(x)+(x.ex?'<div class="exn">Это пример объявления: так выглядит карточка. Вещь ненастоящая.</div>':'')+(x.sold?'<div class="exn">Это объявление продано.</div>':'')+'<div class="pr">'+pr(x.p)+'</div><div style="margin-top:2px">'+esc(x.t)+'</div><div class="ls"><span>Просмотры: '+(x.views||0)+'</span><span>В избранном: '+(x.favs||0)+'</span></div>'+
   (x.d?'<p style="margin:10px 0 0;white-space:pre-wrap">'+esc(x.d)+'</p>':'')+'<div class="kv"><div><small>Размер</small>'+esc(szLbl(x.s))+'</div><div><small>Состояние</small>'+esc(x.co)+'</div><div><small>Стиль</small>'+esc(x.ae)+'</div><div><small>Категория</small>'+esc(x.cat)+'</div></div>'+
   '<div class="sel" id="gs"><div class="av">'+esc(s.n.charAt(0).toUpperCase())+'</div><div style="flex:1"><b>'+esc(s.n)+(s.v?' ✓':'')+'</b><div style="color:var(--mut);font-size:13px">'+(s.v?'Проверенный магазин':'Частный продавец')+(s.c?' · '+esc(s.c):'')+'</div></div>'+(x.mine?'':'<span style="color:var(--mut)">›</span>')+'</div>'+
-  (x.mine?'':(s.h?'<a class="btn" target="_blank" rel="noopener" data-se="'+x.se+'" href="'+link(s.h,msgFor(x))+'">Написать в Telegram</a>':'<div class="exn" style="text-align:center">Продавец не указал Telegram для связи</div>'))+
-  (x.mine?'<button class="btn" id="ed">Редактировать</button><button class="btn s" id="dl">Удалить объявление</button>':'<button class="btn s" id="fv">'+(st.fav[x.id]?'Убрать из избранного':'В избранное')+'</button>')+
+  (x.mine||x.sold?'':(s.h?'<a class="btn" target="_blank" rel="noopener" data-se="'+x.se+'" href="'+link(s.h,msgFor(x))+'">Написать в Telegram</a>':'<div class="exn" style="text-align:center">Продавец не указал Telegram для связи</div>'))+
+  (x.mine?'<button class="btn" id="sd">'+(x.sold?'Вернуть в продажу':'Отметить проданным')+'</button><button class="btn s" id="ed">Редактировать</button><button class="btn s" id="dl">Удалить объявление</button>':'<button class="btn s" id="fv">'+(st.fav[x.id]?'Убрать из избранного':'В избранное')+'</button>')+
   (x.mine?'':'<button class="btn s" id="rp" style="border:0;color:var(--mut);font-size:13px">Пожаловаться</button>'));
   if(!x.mine)$('gs').onclick=function(){seller(x.se)};
   if($('fv'))$('fv').onclick=function(){if(togFav(x.id)===false)return;close_();render()};
+  if($('sd'))$('sd').onclick=function(){setSold(x.id,!x.sold)};
   if($('ed'))$('ed').onclick=function(){startEdit(x.id)};
   if($('dl'))$('dl').onclick=function(){confirmDel(x.id)};
   if($('rp'))$('rp').onclick=function(){report(x)};
 }
 function seller(k){
-  var s=SEL[k],L=P.filter(function(p){return p.se==k});
+  var s=SEL[k],L=P.filter(function(p){return p.se==k&&!p.sold}),SC=P.filter(function(p){return p.se==k&&p.sold}).length;
   open_('<div class="row" style="align-items:center;gap:12px"><div class="av" style="width:56px;height:56px;font-size:22px">'+esc(s.n.charAt(0).toUpperCase())+'</div><div><b style="font-size:18px">'+esc(s.n)+(s.v?' ✓':'')+'</b><div style="color:var(--mut);font-size:13px">'+(s.v?'Проверенный магазин':'Частный продавец')+(s.c?' · '+esc(s.c):'')+'</div></div></div>'+
   '<p>'+esc(s.a)+'</p>'+(s.h?'<a class="btn" target="_blank" rel="noopener" data-se="'+k+'" href="'+link(s.h,'Здравствуйте! Нашёл ваш магазин в Resale.')+'">Написать в Telegram</a>':'<div class="exn" style="text-align:center">Продавец не указал Telegram для связи</div>')+
-  revBlock(k)+'<h2>Объявления ('+L.length+')</h2><div class="grid">'+L.map(cardH).join('')+'</div>');rvBind(k);
+  revBlock(k)+'<h2>Объявления ('+L.length+')'+(SC?' · продано '+SC:'')+'</h2><div class="grid">'+L.map(cardH).join('')+'</div>');rvBind(k);
   document.querySelectorAll('#sh .card').forEach(function(c){c.onclick=function(e){var f=e.target.closest('[data-f]');if(f){if(togFav(+f.dataset.f)===false)return;seller(k);render();return}prod(+c.dataset.id)}});
 }
 function report(x){
@@ -348,11 +352,17 @@ function reviewForm(k){
   d();
 }
 function mineH(){
-  var M=P.filter(function(x){return x.mine}),v=0,f=0;
-  M.forEach(function(x){v+=x.views||0;f+=x.favs||0});
+  var all=P.filter(function(x){return x.mine}),A=all.filter(function(x){return !x.sold}),S=all.filter(function(x){return x.sold}),v=0,f=0;
+  A.forEach(function(x){v+=x.views||0;f+=x.favs||0});
+  var tab=st.mt=='sold'?'sold':'active',M=tab=='sold'?S:A;
+  var row=function(x){
+    return '<div class="li" data-id="'+x.id+'"><div class="lt" style="background:'+bg(x)+'">'+(x.imgs&&x.imgs.length?'':esc(x.t.charAt(0)))+'</div><div style="flex:1;min-width:0"><b>'+pr(x.p)+'</b><div class="ln">'+esc(x.t)+'</div><div class="ls"><span>Просмотры: '+(x.views||0)+'</span><span>Избранное: '+(x.favs||0)+'</span></div><div class="act">'+
+    (x.sold?'<button class="chip" data-unsold="'+x.id+'">Вернуть в продажу</button>':'<button class="chip" data-sold="'+x.id+'">Продано</button><button class="chip" data-ed="'+x.id+'">Изменить</button>')+
+    '<button class="chip" data-del="'+x.id+'">Удалить</button></div></div></div>'};
   return '<header><span class="logo">мои</span></header>'+
-  '<div class="grid" style="grid-template-columns:repeat(3,1fr)">'+[['Объявлений',M.length],['Просмотров',v],['В избранном',f]].map(function(k){return '<div class="stc"><small>'+k[0]+'</small><b>'+k[1]+'</b></div>'}).join('')+'</div>'+
-  (M.length?'<div style="margin-top:12px">'+M.map(function(x){return '<div class="li" data-id="'+x.id+'"><div class="lt" style="background:'+bg(x)+'">'+(x.imgs&&x.imgs.length?'':esc(x.t.charAt(0)))+'</div><div style="flex:1;min-width:0"><b>'+pr(x.p)+'</b><div class="ln">'+esc(x.t)+'</div><div class="ls"><span>Просмотры: '+(x.views||0)+'</span><span>Избранное: '+(x.favs||0)+'</span></div><div class="act"><button class="chip" data-ed="'+x.id+'">Изменить</button><button class="chip" data-del="'+x.id+'">Удалить</button></div></div></div>'}).join('')+'</div>':'<div class="empty">У вас пока нет объявлений.<br>Опубликуйте первое во вкладке «Продать».</div>')+
+  '<div class="grid" style="grid-template-columns:repeat(3,1fr)">'+[['Объявлений',A.length],['Просмотров',v],['В избранном',f]].map(function(k){return '<div class="stc"><small>'+k[0]+'</small><b>'+k[1]+'</b></div>'}).join('')+'</div>'+
+  '<div style="display:flex;gap:8px;margin-top:14px"><button class="chip'+(tab=='active'?' on':'')+'" data-mt="active">Активные ('+A.length+')</button><button class="chip'+(tab=='sold'?' on':'')+'" data-mt="sold">Продано ('+S.length+')</button></div>'+
+  (M.length?'<div style="margin-top:12px">'+M.map(row).join('')+'</div>':(tab=='sold'?'<div class="empty">Пока ничего не продано.<br>Когда вещь уйдёт, нажмите «Продано» у объявления.</div>':'<div class="empty">У вас пока нет объявлений.<br>Опубликуйте первое во вкладке «Продать».</div>'))+
   '<small style="color:var(--mut);display:block;margin-top:10px">'+(LIVE?'Просмотры считаются один раз на человека в сутки. Данные обновляются при открытии вкладки.':'В прототипе счётчики считают открытия и ♡ на этом устройстве. Настоящая статистика по всем покупателям появится с бэкендом.')+'</small>';
 }
 function profH(){
@@ -409,6 +419,14 @@ function restoreDraft(){
   $('szb').onclick=function(){setTimeout(saveD,0)};
 }
 st.edit=0;
+function setSold(id,sold){
+  var x=P.filter(function(p){return p.id==id})[0];if(!x||x.ex)return;
+  var fin=function(){x.sold=sold;close_();render();toast(sold?'Отмечено как проданное':'Снова в продаже')};
+  if(LIVE&&x.db){
+    var b=$('sd');if(b)b.disabled=true;
+    sbCall('set_sold',{id:id,sold:sold}).then(fin).catch(function(e){if(b)b.disabled=false;toast(errMsg(e))})
+  }else fin()
+}
 function startEdit(id){
   var x=P.filter(function(p){return p.id==id})[0];if(!x)return;
   st.edit=id;nph=(x.imgs||[]).slice();
@@ -477,7 +495,7 @@ function publish(){
     (editing?sbCall('update_listing',Object.assign({id:editing},body)):sbCall('create_listing',body)).then(function(j){
       var row=mapL(j.listing),i=-1;P.forEach(function(q,n){if(q.id==row.id)i=n});
       if(i>=0)P[i]=row;else P.unshift(row);
-      nph=[];st.draft={};st.v='mine';st.ae='Все';st.q='';st.size='';st.cat='';st.maxp='';st.type='';st.edit=0;st.busy=0;
+      nph=[];st.draft={};st.v='mine';st.mt='active';st.ae='Все';st.q='';st.size='';st.cat='';st.maxp='';st.type='';st.edit=0;st.busy=0;
       render();toast(editing?'Изменения сохранены':'Объявление опубликовано');window.scrollTo(0,0)
     }).catch(function(e){
       st.busy=0;var b2=$('pub');if(b2){b2.disabled=false;b2.textContent=editing?'Сохранить изменения':'Опубликовать'}toast(errMsg(e))
@@ -486,9 +504,9 @@ function publish(){
   }
   var ed=st.edit&&P.filter(function(q){return q.id==st.edit})[0];
   if(ed){ed.t=t;ed.p=p;ed.s=nsz;ed.cat=$('n_k').value;ed.ae=$('n_a').value;ed.co=$('n_c').value;ed.imgs=nph.slice();ed.d=$('n_d').value.trim()}else P.unshift({id:st.nid++,t:t,p:p,s:nsz,cat:$('n_k').value,ae:$('n_a').value,co:$('n_c').value,se:'me',mine:1,imgs:nph.slice(),d:$('n_d').value.trim(),g:1});nph=[];st.draft={};
-  st.v='mine';st.ae='Все';st.q='';st.size='';st.cat='';st.maxp='';st.type='';st.edit=0;render();toast(ed?'Изменения сохранены':'Объявление опубликовано');window.scrollTo(0,0);
+  st.v='mine';st.mt='active';st.ae='Все';st.q='';st.size='';st.cat='';st.maxp='';st.type='';st.edit=0;render();toast(ed?'Изменения сохранены':'Объявление опубликовано');window.scrollTo(0,0);
 }
-document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){if(st.edit&&b.dataset.v!='sell'){st.edit=0;st.draft={};nph=[]}st.v=b.dataset.v;render();window.scrollTo(0,0);refresh()}});
+document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){if(st.edit&&b.dataset.v!='sell'){st.edit=0;st.draft={};nph=[]}if(b.dataset.v=='mine')st.mt='active';st.v=b.dataset.v;render();window.scrollTo(0,0);refresh()}});
 render();
 initApp();
 function gate(){
