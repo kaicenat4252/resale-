@@ -142,7 +142,7 @@ function mapL(r){
   return {id:r.id,t:r.title,p:r.price,s:r.size,cat:r.category,ae:r.aesthetic,co:r.condition,se:mine?'me':'u'+r.seller_id,mine:mine?1:0,sold:!!r.sold_at,imgs:r.photos||[],d:r.description||'',views:r.views||0,favs:r.favs||0,g:r.id%2?1:2,db:1}
 }
 function monthRu(d){var m=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'],x=new Date(d);return isNaN(x)?'':m[x.getMonth()]+' '+x.getFullYear()}
-function fillMe(p){SEL.me.n=p.name;SEL.me.h=p.username||'';SEL.me.c=p.city||'';SEL.me.a=p.about||'';SEL.me.v=0;st.lock=(p.username&&p.username==st.tgNick)?1:0}
+function fillMe(p){SEL.me.n=p.name;SEL.me.h=p.username||'';SEL.me.c=p.city||'';SEL.me.a=p.about||'';SEL.me.v=0;st.notify=p.notify!==false;st.lock=(p.username&&p.username==st.tgNick)?1:0}
 function loadAll(){
   if(!LIVE)return Promise.resolve();
   return Promise.all([sbGet('listings','select=*&order=created_at.desc&limit=500'),sbGet('profiles','select=*&limit=1000'),sbGet('reviews','select=*&order=created_at.desc&limit=2000')]).then(function(a){
@@ -173,7 +173,7 @@ function initApp(){
   if(!LIVE)return;
   st.loading=true;render();
   var start=login();
-  start.then(loadAll).catch(function(){toast('Не удалось загрузить объявления. Проверьте интернет')}).then(function(){st.loading=false;render()})
+  start.then(loadAll).catch(function(){toast('Не удалось загрузить объявления. Проверьте интернет')}).then(function(){st.loading=false;render();openDeepLink()})
 }
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function pr(n){return n.toLocaleString('ru-RU')+' ₽'}
@@ -243,6 +243,7 @@ function bind(){
   var eu=$('eu');if(eu)eu.onclick=editP;
   var tp=$('tp');if(tp)tp.onclick=editP;
   var tr=$('tr');if(tr)tr.onclick=showTerms;
+  var nf=$('nf');if(nf)nf.onclick=toggleNotify;
   var cx=$('cx');if(cx)cx.onclick=cancelEdit;
   restoreDraft();
   var ep=$('ep');if(ep)ep.onclick=editP;
@@ -261,6 +262,7 @@ function prod(id){
   '<div class="sel" id="gs"><div class="av">'+esc(s.n.charAt(0).toUpperCase())+'</div><div style="flex:1"><b>'+esc(s.n)+(s.v?' ✓':'')+'</b><div style="color:var(--mut);font-size:13px">'+(s.v?'Проверенный магазин':'Частный продавец')+(s.c?' · '+esc(s.c):'')+'</div></div>'+(x.mine?'':'<span style="color:var(--mut)">›</span>')+'</div>'+
   (x.mine||x.sold?'':(s.h?'<a class="btn" target="_blank" rel="noopener" data-se="'+x.se+'" href="'+link(s.h,msgFor(x))+'">Написать в Telegram</a>':'<div class="exn" style="text-align:center">Продавец не указал Telegram для связи</div>'))+
   (x.mine?'<button class="btn" id="sd">'+(x.sold?'Вернуть в продажу':'Отметить проданным')+'</button><button class="btn s" id="ed">Редактировать</button><button class="btn s" id="dl">Удалить объявление</button>':'<button class="btn s" id="fv">'+(st.fav[x.id]?'Убрать из избранного':'В избранное')+'</button>')+
+  (LIVE&&x.db?'<button class="btn s" id="shr">Поделиться</button>':'')+
   (x.mine?'':'<button class="btn s" id="rp" style="border:0;color:var(--mut);font-size:13px">Пожаловаться</button>'));
   if(!x.mine)$('gs').onclick=function(){seller(x.se)};
   if($('fv'))$('fv').onclick=function(){if(togFav(x.id)===false)return;close_();render()};
@@ -268,6 +270,7 @@ function prod(id){
   if($('ed'))$('ed').onclick=function(){startEdit(x.id)};
   if($('dl'))$('dl').onclick=function(){confirmDel(x.id)};
   if($('rp'))$('rp').onclick=function(){report(x)};
+  if($('shr'))$('shr').onclick=function(){shareListing(x)};
 }
 function seller(k){
   var s=SEL[k],L=P.filter(function(p){return p.se==k&&!p.sold}),SC=P.filter(function(p){return p.se==k&&p.sold}).length;
@@ -373,7 +376,7 @@ function profH(){
   '<button class="btn s" id="ep" style="margin:14px 0 0">Редактировать профиль</button></div>'+
   '<div class="sel" id="tp"><div class="av">@</div><div style="flex:1"><b>Telegram для связи</b><div style="color:var(--mut);font-size:13px">'+(s.h?'@'+esc(s.h)+(st.lock?' · из аккаунта Telegram':' · в профиле не показывается'):(st.nouser?'В аккаунте Telegram нет юзернейма. Создайте его в настройках Telegram':'Не указан. Без него покупатели не смогут вам написать'))+'</div></div></div>'+
   ''+
-  '<h2>Отзывы'+(a.length?' ('+a.length+')':'')+'</h2>'+revList('me')+'<div class="sel" id="tr" style="margin-top:12px"><div class="av">§</div><div style="flex:1"><b>Правила и оферта</b><div style="color:var(--mut);font-size:13px">Условия использования площадки</div></div><span style="color:var(--mut)">›</span></div>';
+  '<h2>Отзывы'+(a.length?' ('+a.length+')':'')+'</h2>'+revList('me')+(LIVE&&AUTH?'<div class="sel" id="nf" style="margin-top:12px"><div class="av">✉</div><div style="flex:1"><b>Уведомления в Telegram</b><div style="color:var(--mut);font-size:13px">'+(st.notify?'Включены: отзывы, избранное, снижение цены':'Выключены')+'</div></div><span style="color:var(--mut)">›</span></div>':'')+'<div class="sel" id="tr" style="margin-top:12px"><div class="av">§</div><div style="flex:1"><b>Правила и оферта</b><div style="color:var(--mut);font-size:13px">Условия использования площадки</div></div><span style="color:var(--mut)">›</span></div>';
 }
 function editP(){
   var s=SEL.me;
@@ -398,7 +401,7 @@ function togFav(id){
   var on=!st.fav[id];
   st.fav[id]=on;x.favs=Math.max(0,(x.favs||0)+(on?1:-1));
   if(LIVE&&AUTH&&x.db){
-    sbCall('toggle_fav',{listing_id:id,on:on}).catch(function(e){st.fav[id]=!on;x.favs=Math.max(0,(x.favs||0)+(on?-1:1));render();toast(errMsg(e))})
+    sbCall('toggle_fav',{listing_id:id,on:on}).then(function(){if(on)maybeAskNotify()}).catch(function(e){st.fav[id]=!on;x.favs=Math.max(0,(x.favs||0)+(on?-1:1));render();toast(errMsg(e))})
   }
 }
 [[-1,128,9],[-2,214,17],[-3,67,4],[-4,91,6],[-5,53,3],[-6,302,21],[-7,48,2],[-8,35,1]].forEach(function(a){
@@ -419,6 +422,45 @@ function restoreDraft(){
   $('szb').onclick=function(){setTimeout(saveD,0)};
 }
 st.edit=0;
+function appLink(id){return SB.bot+(id?'?startapp=l'+id:'')}
+function copyText(t){
+  try{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t).then(function(){return true},function(){return false})}catch(e){}
+  return Promise.resolve(false)
+}
+function shareListing(x){
+  var link=appLink(x.id),text=x.t+' — '+pr(x.p)+(x.s&&x.s!='ONE'?' (размер '+x.s+')':'')+'. Нашёл в Resale';
+  var t=window.Telegram&&window.Telegram.WebApp;
+  if(inTgClient()&&t.openTelegramLink){t.openTelegramLink('https://t.me/share/url?url='+encodeURIComponent(link)+'&text='+encodeURIComponent(text));return}
+  if(navigator.share){navigator.share({title:x.t,text:text,url:link}).catch(function(){});return}
+  copyText(link).then(function(ok){toast(ok?'Ссылка скопирована':'Скопируйте ссылку: '+link)})
+}
+function openDeepLink(){
+  var t=window.Telegram&&window.Telegram.WebApp,sp=(t&&t.initDataUnsafe&&t.initDataUnsafe.start_param)||'';
+  var m=/^l(\d{1,15})$/.exec(sp);if(!m)return;
+  var x=P.filter(function(q){return q.id==+m[1]&&q.db})[0];
+  if(x)prod(x.id);else toast('Объявление не найдено. Возможно, его удалили')
+}
+function askWrite(cb){
+  var t=window.Telegram&&window.Telegram.WebApp;
+  if(inTgClient()&&t.requestWriteAccess&&(!t.isVersionAtLeast||t.isVersionAtLeast('6.9'))){try{t.requestWriteAccess(function(ok){cb(!!ok)});return}catch(e){}}
+  cb(true)
+}
+function toggleNotify(){
+  if(!needTg())return;
+  var on=!st.notify;
+  var apply=function(){sbCall('set_notify',{on:on}).then(function(j){st.notify=j.profile.notify!==false;render();toast(st.notify?'Уведомления включены':'Уведомления выключены')}).catch(function(e){toast(errMsg(e))})};
+  if(on)askWrite(function(ok){if(ok)apply();else toast('Telegram не разрешил боту писать вам. Откройте чат с ботом и нажмите «Запустить»')});
+  else apply()
+}
+function maybeAskNotify(){
+  if(!LIVE||!AUTH||!inTgClient()||!st.notify)return;
+  var asked=false;try{asked=localStorage.getItem('resale_nq')=='1'}catch(e){}
+  if(asked)return;
+  try{localStorage.setItem('resale_nq','1')}catch(e){}
+  open_('<h2 style="margin-top:4px">Уведомления</h2><p style="color:var(--mut)">Бот сообщит, если вашу вещь добавят в избранное или оставят отзыв, и если снизится цена на вещь из вашего избранного.</p><button class="btn" id="nq_y">Разрешить</button><button class="btn s" id="nq_n">Не сейчас</button>');
+  $('nq_n').onclick=close_;
+  $('nq_y').onclick=function(){askWrite(function(ok){close_();toast(ok?'Уведомления включены':'Не удалось. Откройте чат с ботом и нажмите «Запустить»')})}
+}
 function setSold(id,sold){
   var x=P.filter(function(p){return p.id==id})[0];if(!x||x.ex)return;
   var fin=function(){x.sold=sold;close_();render();toast(sold?'Отмечено как проданное':'Снова в продаже')};
@@ -496,7 +538,7 @@ function publish(){
       var row=mapL(j.listing),i=-1;P.forEach(function(q,n){if(q.id==row.id)i=n});
       if(i>=0)P[i]=row;else P.unshift(row);
       nph=[];st.draft={};st.v='mine';st.mt='active';st.ae='Все';st.q='';st.size='';st.cat='';st.maxp='';st.type='';st.edit=0;st.busy=0;
-      render();toast(editing?'Изменения сохранены':'Объявление опубликовано');window.scrollTo(0,0)
+      render();toast(editing?'Изменения сохранены':'Объявление опубликовано');window.scrollTo(0,0);if(!editing)maybeAskNotify()
     }).catch(function(e){
       st.busy=0;var b2=$('pub');if(b2){b2.disabled=false;b2.textContent=editing?'Сохранить изменения':'Опубликовать'}toast(errMsg(e))
     });
