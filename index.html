@@ -62,6 +62,8 @@ input,select,textarea{font-size:16px!important}.pcard{background:var(--card);bor
 .act{display:flex;gap:6px;margin-top:8px}.act .chip{padding:5px 12px;font-size:12px}
 @media (min-width:720px){#app{max-width:1180px;padding:0 28px 96px}.grid{grid-template-columns:repeat(4,1fr);gap:16px}.hero{padding:28px}.logo{font-size:30px}.sheet{max-width:640px;border-radius:26px}.gate .gin,.gin{max-width:640px}nav div{max-width:520px}.card{border-radius:22px}.ph{font-size:56px}}
 .ex{position:absolute;top:8px;left:8px;background:var(--inv);color:var(--invt);font-size:10px;font-weight:700;letter-spacing:.6px;padding:3px 8px;border-radius:999px;text-transform:uppercase}
+.rec{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 12px;color:var(--mut);font-size:13px}.rec .chip{padding:4px 12px;font-size:12px;flex:none}
+.sortbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 10px;color:var(--mut);font-size:13px}.sortbar .chip{padding:5px 12px;font-size:13px;flex:none}
 .card.sd .ph{filter:grayscale(1);opacity:.6}
 .exn{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--bg);border:1px dashed var(--mut);color:var(--mut);font-size:13px}
 #toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--inv);color:var(--invt);padding:10px 18px;border-radius:20px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:40}
@@ -80,6 +82,7 @@ input,select,textarea{font-size:16px!important}.pcard{background:var(--card);bor
 <p>Мы не принимаем оплату, не отвечаем за доставку, не проверяем качество, подлинность и наличие товаров, а также честность пользователей. Отметка «Проверенный магазин» и отзывы не гарантируют безопасность сделки.</p>
 <p><b>Resale не несёт ответственности</b> за убытки, мошенничество и иные последствия сделок, которые вы заключаете с другими пользователями. Все договорённости об оплате, отправке и возврате вы заключаете самостоятельно.</p>
 <p>Как снизить риск: не переводите предоплату незнакомым продавцам, просите видео вещи и подтверждение отправки, пользуйтесь доставкой с отслеживанием и оплатой при получении, проверяйте вещь при получении. Если видите обман, нажмите «Пожаловаться» в объявлении.</p>
+<p><b>Рекомендации.</b> Порядок вещей в ленте подстраивается под то, что вы смотрите и добавляете в избранное. Эти данные хранятся только на вашем устройстве и нигде больше не сохраняются. Сбросить их можно в ленте кнопкой «Сбросить».</p>
 <p>Продолжая, вы подтверждаете, что прочитали эти условия и принимаете их.</p>
 </div>
 <label class="gc"><input type="checkbox" id="gchk"><span>Я прочитал(а) и принимаю условия</span></label>
@@ -139,7 +142,7 @@ function needTg(){
 }
 function mapL(r){
   var mine=AUTH&&r.seller_id==AUTH.id;
-  return {id:r.id,t:r.title,p:r.price,s:r.size,cat:r.category,ae:r.aesthetic,co:r.condition,se:mine?'me':'u'+r.seller_id,mine:mine?1:0,sold:!!r.sold_at,imgs:r.photos||[],d:r.description||'',views:r.views||0,favs:r.favs||0,g:r.id%2?1:2,db:1}
+  return {id:r.id,t:r.title,p:r.price,s:r.size,cat:r.category,ae:r.aesthetic,co:r.condition,se:mine?'me':'u'+r.seller_id,mine:mine?1:0,sold:!!r.sold_at,ts:Date.parse(r.created_at)||0,imgs:r.photos||[],d:r.description||'',views:r.views||0,favs:r.favs||0,g:r.id%2?1:2,db:1}
 }
 function monthRu(d){var m=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'],x=new Date(d);return isNaN(x)?'':m[x.getMonth()]+' '+x.getFullYear()}
 function fillMe(p){SEL.me.n=p.name;SEL.me.h=p.username||'';SEL.me.c=p.city||'';SEL.me.a=p.about||'';SEL.me.v=0;st.notify=p.notify!==false;st.lock=(p.username&&p.username==st.tgNick)?1:0}
@@ -161,7 +164,7 @@ function loadAll(){
       (REV[k]=REV[k]||[]).push({n:(pm[r.author_id]||{}).name||'Покупатель',r:r.rating,t:r.text||'',d:monthRu(r.created_at)});
       if(AUTH&&r.author_id==AUTH.id)st.rv['u'+r.seller_id]=1
     });
-    st.loaded=Date.now()
+    st.loaded=Date.now();st.recFrozen=null
   })
 }
 function refresh(){
@@ -197,12 +200,22 @@ function cardH(x){
 function render(){
   var h='';
   if(st.v=='feed'){
-    var L=filt(),nf=(st.size?1:0)+(st.cat?1:0)+(st.maxp?1:0)+(st.type?1:0);
+    var L=filt(),nf=(st.size?1:0)+(st.cat?1:0)+(st.maxp?1:0)+(st.type?1:0),RC=null;
+    if(st.sort=='rec'&&st.ae=='Все'&&!st.q&&!nf){
+      var fz=st.recFrozen;
+      if(fz){
+        if(fz.ids){var pos={};fz.ids.forEach(function(id,i){pos[id]=i});RC={list:L.slice().sort(function(a,b){var pa=pos[a.id],pb=pos[b.id];return(pa===undefined?1e9:pa)-(pb===undefined?1e9:pb)}),why:fz.why}}
+      }else{
+        RC=recRank(L);st.recFrozen=RC?{ids:RC.list.map(function(x){return x.id}),why:RC.why}:{ids:null}
+      }
+      if(RC)L=RC.list
+    }
+    if(st.sort!='rec')L=sortList(L,st.sort);
     h='<header><span class="logo">resale</span><span class="ico" id="bf">'+(nf?nf:'⚙')+'</span></header>'+
     '<div class="search"><input id="q" placeholder="Поиск по вещам и стилям" value="'+esc(st.q)+'"></div>'+
     '<div class="chips">'+AES.map(function(a){return '<button class="chip'+(a==st.ae?' on':'')+'" data-ae="'+a+'">'+a+'</button>'}).join('')+'</div>'+
     (st.ae=='Все'&&!st.q?'<div class="hero"><span>Винтаж, streetwear, archive. Пишите продавцам напрямую в Telegram.</span></div>':'')+
-    (st.loading?'<div class="empty" style="padding:6px 0 12px">Загружаем объявления…</div>':'')+(L.length?'<div class="grid">'+L.map(cardH).join('')+'</div>':'<div class="empty">Ничего не нашлось.<br>Попробуйте другой стиль или фильтр.</div>');
+    sortBar(L.length)+(RC?'<div class="rec"><span>Подобрано по вашим просмотрам'+(RC.why?' · '+esc(RC.why):'')+'</span><button class="chip" id="rec_x">Сбросить</button></div>':'')+(st.loading?'<div class="empty" style="padding:6px 0 12px">Загружаем объявления…</div>':'')+(L.length?'<div class="grid">'+L.map(cardH).join('')+'</div>':'<div class="empty">Ничего не нашлось.<br>Попробуйте другой стиль или фильтр.</div>');
   }else if(st.v=='prof'){
     h=profH();
   }else if(st.v=='mine'){
@@ -237,6 +250,7 @@ function bind(){
     prod(+c.dataset.id)}});
   var q=$('q');if(q)q.oninput=function(){st.q=q.value;var p=q.selectionStart;render();var n=$('q');n.focus();n.setSelectionRange(p,p)};
   var bf=$('bf');if(bf)bf.onclick=filters2;
+  var srt=$('srt');if(srt)srt.onclick=sortSheet;
   var pb=$('pub');if(pb)pb.onclick=publish;
   var nk=$('n_k');if(nk){nk.onchange=fillSz;fillSz()}
   var nfi=$('n_f');if(nfi){nfi.onchange=function(){addPh(nfi.files);nfi.value=''};fillPh()}
@@ -244,6 +258,7 @@ function bind(){
   var tp=$('tp');if(tp)tp.onclick=editP;
   var tr=$('tr');if(tr)tr.onclick=showTerms;
   var nf=$('nf');if(nf)nf.onclick=toggleNotify;
+  var rx=$('rec_x');if(rx)rx.onclick=confirmRecReset;
   var cx=$('cx');if(cx)cx.onclick=cancelEdit;
   restoreDraft();
   var ep=$('ep');if(ep)ep.onclick=editP;
@@ -256,11 +271,11 @@ function close_(){$('ov').style.display='none';document.body.style.overflow=''}
 $('ov').onclick=function(e){if(e.target==this)close_()};
 function prod(id){
   var x=P.filter(function(p){return p.id==id})[0],s=SEL[x.se];
-  if(st.v!='mine'){if(LIVE&&x.db){if(AUTH&&!x.mine)sbCall('view',{listing_id:x.id}).catch(function(){})}else x.views=(x.views||0)+1}
+  if(st.v!='mine'){recEvent('view',x);if(LIVE&&x.db){if(AUTH&&!x.mine)sbCall('view',{listing_id:x.id}).catch(function(){})}else x.views=(x.views||0)+1}
   open_(gal(x)+(x.ex?'<div class="exn">Это пример объявления: так выглядит карточка. Вещь ненастоящая.</div>':'')+(x.sold?'<div class="exn">Это объявление продано.</div>':'')+'<div class="pr">'+pr(x.p)+'</div><div style="margin-top:2px">'+esc(x.t)+'</div><div class="ls"><span>Просмотры: '+(x.views||0)+'</span><span>В избранном: '+(x.favs||0)+'</span></div>'+
   (x.d?'<p style="margin:10px 0 0;white-space:pre-wrap">'+esc(x.d)+'</p>':'')+'<div class="kv"><div><small>Размер</small>'+esc(szLbl(x.s))+'</div><div><small>Состояние</small>'+esc(x.co)+'</div><div><small>Стиль</small>'+esc(x.ae)+'</div><div><small>Категория</small>'+esc(x.cat)+'</div></div>'+
   '<div class="sel" id="gs"><div class="av">'+esc(s.n.charAt(0).toUpperCase())+'</div><div style="flex:1"><b>'+esc(s.n)+(s.v?' ✓':'')+'</b><div style="color:var(--mut);font-size:13px">'+(s.v?'Проверенный магазин':'Частный продавец')+(s.c?' · '+esc(s.c):'')+'</div></div>'+(x.mine?'':'<span style="color:var(--mut)">›</span>')+'</div>'+
-  (x.mine||x.sold?'':(s.h?'<a class="btn" target="_blank" rel="noopener" data-se="'+x.se+'" href="'+link(s.h,msgFor(x))+'">Написать в Telegram</a>':'<div class="exn" style="text-align:center">Продавец не указал Telegram для связи</div>'))+
+  (x.mine||x.sold?'':(s.h?'<a class="btn" target="_blank" rel="noopener" data-se="'+x.se+'" data-lid="'+x.id+'" href="'+link(s.h,msgFor(x))+'">Написать в Telegram</a>':'<div class="exn" style="text-align:center">Продавец не указал Telegram для связи</div>'))+
   (x.mine?'<button class="btn" id="sd">'+(x.sold?'Вернуть в продажу':'Отметить проданным')+'</button><button class="btn s" id="ed">Редактировать</button><button class="btn s" id="dl">Удалить объявление</button>':'<button class="btn s" id="fv">'+(st.fav[x.id]?'Убрать из избранного':'В избранное')+'</button>')+
   (LIVE&&x.db?'<button class="btn s" id="shr">Поделиться</button>':'')+
   (x.mine?'':'<button class="btn s" id="rp" style="border:0;color:var(--mut);font-size:13px">Пожаловаться</button>'));
@@ -324,7 +339,7 @@ function editU(){
   $('eu_s').onclick=function(){var u=$('eu_i').value.replace(/^@/,'').trim();if(!/^[A-Za-z0-9_]{5,32}$/.test(u)){toast('Юзернейм: 5-32 символа, латиница, цифры, _');return}SEL.me.h=u;SEL.me.n='@'+u;close_();render();toast('Сохранено')}
 }
 st.cont={};
-document.addEventListener('click',function(e){var a=e.target.closest('a[data-se]');if(!a)return;var k=a.dataset.se;st.cont[k]=1;if(LIVE&&AUTH&&/^u\d+$/.test(k))sbCall('contact',{seller_id:+k.slice(1)}).catch(function(){});
+document.addEventListener('click',function(e){var a=e.target.closest('a[data-se]');if(!a)return;var k=a.dataset.se;st.cont[k]=1;if(a.dataset.lid){var cx=P.filter(function(q){return q.id==+a.dataset.lid})[0];recEvent('contact',cx)}if(LIVE&&AUTH&&/^u\d+$/.test(k))sbCall('contact',{seller_id:+k.slice(1)}).catch(function(){});
   if(SEL[k]&&SEL[k].demo){e.preventDefault();e.stopImmediatePropagation();
     var mt=decodeURIComponent(a.href.split('?text=')[1]||'');
     open_('<h2 style="margin-top:4px">Демо-режим</h2><p>Продавец в демо вымышленный. В рабочей версии откроется личный чат с продавцом, а в поле сообщения уже будет текст:</p><div class="rv" style="white-space:pre-wrap">'+esc(mt)+'</div><button class="btn" id="dm_ok">Понятно</button>');
@@ -399,7 +414,7 @@ function togFav(id){
   if(!x)return false;
   if(LIVE&&x.db&&!needTg())return false;
   var on=!st.fav[id];
-  st.fav[id]=on;x.favs=Math.max(0,(x.favs||0)+(on?1:-1));
+  recEvent(on?'fav':'unfav',x);st.fav[id]=on;x.favs=Math.max(0,(x.favs||0)+(on?1:-1));
   if(LIVE&&AUTH&&x.db){
     sbCall('toggle_fav',{listing_id:id,on:on}).then(function(){if(on)maybeAskNotify()}).catch(function(e){st.fav[id]=!on;x.favs=Math.max(0,(x.favs||0)+(on?-1:1));render();toast(errMsg(e))})
   }
@@ -422,6 +437,59 @@ function restoreDraft(){
   $('szb').onclick=function(){setTimeout(saveD,0)};
 }
 st.edit=0;
+var REC_KEY='resale_rec',REC_MIN=5,REC_HALF=14*864e5,REC_W={view:1,fav:3,unfav:-3,contact:5};
+function recLoad(){
+  if(st.recMem)return st.recMem;
+  var a=[];try{a=JSON.parse(localStorage.getItem(REC_KEY)||'[]')}catch(e){a=[]}
+  if(!Array.isArray(a))a=[];
+  a=a.filter(function(e){return Array.isArray(e)&&e.length>=7&&typeof e[0]=='number'&&REC_W[e[1]]!==undefined&&typeof e[2]=='string'&&typeof e[3]=='string'}).slice(-300);
+  st.recMem=a;return a
+}
+function recSave(){try{localStorage.setItem(REC_KEY,JSON.stringify(st.recMem||[]))}catch(e){}}
+function recEvent(kind,x){
+  if(!x||x.mine)return;
+  var a=recLoad(),now=Date.now();
+  for(var i=a.length-1;i>=0&&i>=a.length-10;i--){if(a[i][1]==kind&&a[i][6]==x.id&&now-a[i][0]<18e5)return}
+  a.push([now,kind,x.cat,x.ae,x.p,x.s,x.id]);
+  if(a.length>300)a.splice(0,a.length-300);
+  recSave()
+}
+function recReset(){st.recFrozen=null;st.recMem=[];try{localStorage.removeItem(REC_KEY)}catch(e){}}
+function recRank(list){
+  var a=recLoad();
+  if(a.length<REC_MIN||list.length<2)return null;
+  var now=Date.now(),C={},A={},S={},lp=0,lw=0;
+  a.forEach(function(e){
+    var w=REC_W[e[1]]*Math.pow(.5,(now-e[0])/REC_HALF);
+    C[e[2]]=(C[e[2]]||0)+w;A[e[3]]=(A[e[3]]||0)+w;
+    if(e[5]&&e[5]!='ONE')S[e[5]]=(S[e[5]]||0)+w;
+    if(w>0&&e[4]>0){lp+=w*Math.log(e[4]);lw+=w}
+  });
+  var mx=function(m){var v=0;for(var k in m)if(m[k]>v)v=m[k];return v},mc=mx(C),ma=mx(A),ms=mx(S);
+  if(mc<=0&&ma<=0)return null;
+  var mu=lw>0?lp/lw:0;
+  var norm=function(m,k,mm){return mm>0&&m[k]>0?m[k]/mm:0};
+  var sc=list.map(function(x,i){
+    var s=3*norm(C,x.cat,mc)+2*norm(A,x.ae,ma)+norm(S,x.s,ms);
+    if(lw>0&&x.p>0){var d=Math.log(x.p)-mu;s+=2*Math.exp(-d*d/.72)}
+    if(x.ts)s+=.5*Math.exp(-(now-x.ts)/(30*864e5));
+    return{x:x,s:s,i:i}
+  });
+  sc.sort(function(p,q){return q.s-p.s||p.i-q.i});
+  var out=[],rest=sc.slice();
+  while(rest.length){
+    var pick=0,n=out.length;
+    if(n>=3){var a1=out[n-1].ae;if(out[n-2].ae==a1&&out[n-3].ae==a1){for(var j=0;j<rest.length;j++){if(rest[j].x.ae!=a1){pick=j;break}}}}
+    out.push(rest.splice(pick,1)[0].x)
+  }
+  var top=function(m){var b=null,v=0;for(var k in m)if(m[k]>v){v=m[k];b=k}return b};
+  return{list:out,why:[top(C),top(A)].filter(function(v,i,r){return v&&r.indexOf(v)==i}).join(', ')}
+}
+function confirmRecReset(){
+  open_('<h2 style="margin-top:4px">Сбросить рекомендации?</h2><p style="color:var(--mut)">Лента снова будет показывать вещи по новизне. Избранное, отзывы и ваши объявления не изменятся.</p><button class="btn" id="rr_y">Сбросить</button><button class="btn s" id="rr_n">Отмена</button>');
+  $('rr_n').onclick=close_;
+  $('rr_y').onclick=function(){recReset();close_();render();toast('Рекомендации сброшены')}
+}
 function appLink(id){return SB.bot+(id?'?startapp=l'+id:'')}
 function copyText(t){
   try{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t).then(function(){return true},function(){return false})}catch(e){}
@@ -460,6 +528,28 @@ function maybeAskNotify(){
   open_('<h2 style="margin-top:4px">Уведомления</h2><p style="color:var(--mut)">Бот сообщит, если вашу вещь добавят в избранное или оставят отзыв, и если снизится цена на вещь из вашего избранного.</p><button class="btn" id="nq_y">Разрешить</button><button class="btn s" id="nq_n">Не сейчас</button>');
   $('nq_n').onclick=close_;
   $('nq_y').onclick=function(){askWrite(function(ok){close_();toast(ok?'Уведомления включены':'Не удалось. Откройте чат с ботом и нажмите «Запустить»')})}
+}
+var SORTS=[['rec','По умолчанию'],['new','Сначала новые'],['old','Сначала старые'],['cheap','Сначала дешёвые'],['dear','Сначала дорогие']];
+st.sort=(function(){try{var v=localStorage.getItem('resale_sort');return SORTS.some(function(x){return x[0]==v})?v:'rec'}catch(e){return 'rec'}})();
+function plRu(n){var a=n%10,b=n%100;return a==1&&b!=11?'вещь':(a>=2&&a<=4&&(b<10||b>=20)?'вещи':'вещей')}
+function sortList(L,mode){
+  var key=function(x){return x.ts||0};
+  return L.map(function(x,i){return {x:x,i:i}}).sort(function(a,b){
+    var d=0;
+    if(mode=='new')d=(a.x.ex?1:0)-(b.x.ex?1:0)||key(b.x)-key(a.x);
+    else if(mode=='old')d=(a.x.ex?1:0)-(b.x.ex?1:0)||key(a.x)-key(b.x);
+    else if(mode=='cheap')d=a.x.p-b.x.p;
+    else if(mode=='dear')d=b.x.p-a.x.p;
+    return d||a.i-b.i
+  }).map(function(o){return o.x})
+}
+function sortBar(n){
+  var lbl=SORTS.filter(function(x){return x[0]==st.sort})[0][1];
+  return '<div class="sortbar"><button class="chip" id="srt">↕ '+lbl+'</button><span>'+(st.loading?'':n+' '+plRu(n))+'</span></div>'
+}
+function sortSheet(){
+  open_('<h2 style="margin-top:4px">Сортировка</h2>'+SORTS.map(function(x){return '<button class="btn'+(st.sort==x[0]?'':' s')+' srtopt" data-k="'+x[0]+'" style="margin-top:8px">'+(st.sort==x[0]?'✓ ':'')+x[1]+'</button>'}).join('')+'<small style="color:var(--mut);display:block;margin-top:10px">«По умолчанию» подстраивает ленту под ваши просмотры. Остальные варианты сортируют все найденные вещи.</small>');
+  document.querySelectorAll('.srtopt').forEach(function(b){b.onclick=function(){st.sort=b.dataset.k;try{localStorage.setItem('resale_sort',st.sort)}catch(e){}close_();render();window.scrollTo(0,0)}})
 }
 function setSold(id,sold){
   var x=P.filter(function(p){return p.id==id})[0];if(!x||x.ex)return;
@@ -545,10 +635,10 @@ function publish(){
     return;
   }
   var ed=st.edit&&P.filter(function(q){return q.id==st.edit})[0];
-  if(ed){ed.t=t;ed.p=p;ed.s=nsz;ed.cat=$('n_k').value;ed.ae=$('n_a').value;ed.co=$('n_c').value;ed.imgs=nph.slice();ed.d=$('n_d').value.trim()}else P.unshift({id:st.nid++,t:t,p:p,s:nsz,cat:$('n_k').value,ae:$('n_a').value,co:$('n_c').value,se:'me',mine:1,imgs:nph.slice(),d:$('n_d').value.trim(),g:1});nph=[];st.draft={};
+  if(ed){ed.t=t;ed.p=p;ed.s=nsz;ed.cat=$('n_k').value;ed.ae=$('n_a').value;ed.co=$('n_c').value;ed.imgs=nph.slice();ed.d=$('n_d').value.trim()}else P.unshift({id:st.nid++,t:t,p:p,s:nsz,cat:$('n_k').value,ae:$('n_a').value,co:$('n_c').value,se:'me',mine:1,ts:Date.now(),imgs:nph.slice(),d:$('n_d').value.trim(),g:1});nph=[];st.draft={};
   st.v='mine';st.mt='active';st.ae='Все';st.q='';st.size='';st.cat='';st.maxp='';st.type='';st.edit=0;render();toast(ed?'Изменения сохранены':'Объявление опубликовано');window.scrollTo(0,0);
 }
-document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){if(st.edit&&b.dataset.v!='sell'){st.edit=0;st.draft={};nph=[]}if(b.dataset.v=='mine')st.mt='active';st.v=b.dataset.v;render();window.scrollTo(0,0);refresh()}});
+document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){if(st.edit&&b.dataset.v!='sell'){st.edit=0;st.draft={};nph=[]}if(b.dataset.v=='mine')st.mt='active';if(b.dataset.v=='feed')st.recFrozen=null;st.v=b.dataset.v;render();window.scrollTo(0,0);refresh()}});
 render();
 initApp();
 function gate(){
