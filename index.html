@@ -63,7 +63,7 @@ input,select,textarea{font-size:16px!important}.pcard{background:var(--card);bor
 @media (min-width:720px){#app{max-width:1180px;padding:0 28px 96px}.grid{grid-template-columns:repeat(4,1fr);gap:16px}.hero{padding:28px}.logo{font-size:30px}.sheet{max-width:640px;border-radius:26px}.gate .gin,.gin{max-width:640px}nav div{max-width:520px}.card{border-radius:22px}.ph{font-size:56px}}
 .ex{position:absolute;top:8px;left:8px;background:var(--inv);color:var(--invt);font-size:10px;font-weight:700;letter-spacing:.6px;padding:3px 8px;border-radius:999px;text-transform:uppercase}
 .rec{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 12px;color:var(--mut);font-size:13px}.rec .chip{padding:4px 12px;font-size:12px;flex:none}
-.sortbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 10px;color:var(--mut);font-size:13px}.sortbar .chip{padding:5px 12px;font-size:13px;flex:none}
+.sortbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 2px 10px;color:var(--mut);font-size:13px}.sortlnk{background:none;border:0;padding:8px 0;margin:0;color:var(--mut);font:inherit;font-size:13px;cursor:pointer;text-align:left;-webkit-tap-highlight-color:transparent}.sortlnk b{color:var(--tx);font-weight:600}
 .card.sd .ph{filter:grayscale(1);opacity:.6}
 .exn{margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--bg);border:1px dashed var(--mut);color:var(--mut);font-size:13px}
 #toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--inv);color:var(--invt);padding:10px 18px;border-radius:20px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:40}
@@ -545,7 +545,7 @@ function sortList(L,mode){
 }
 function sortBar(n){
   var lbl=SORTS.filter(function(x){return x[0]==st.sort})[0][1];
-  return '<div class="sortbar"><button class="chip" id="srt">↕ '+lbl+'</button><span>'+(st.loading?'':n+' '+plRu(n))+'</span></div>'
+  return '<div class="sortbar"><button class="sortlnk" id="srt">Сортировка: <b>'+lbl+'</b> ▾</button><span>'+(st.loading?'':n+' '+plRu(n))+'</span></div>'
 }
 function sortSheet(){
   open_('<h2 style="margin-top:4px">Сортировка</h2>'+SORTS.map(function(x){return '<button class="btn'+(st.sort==x[0]?'':' s')+' srtopt" data-k="'+x[0]+'" style="margin-top:8px">'+(st.sort==x[0]?'✓ ':'')+x[1]+'</button>'}).join('')+'<small style="color:var(--mut);display:block;margin-top:10px">«По умолчанию» подстраивает ленту под ваши просмотры. Остальные варианты сортируют все найденные вещи.</small>');
